@@ -41,10 +41,10 @@ export default tseslint.config(
         version: 'detect',
       },
       node: {
-        extensions: ['.js', '.vue', '.ts', '.d.ts'],
+        extensions: ['.js', '.ts', '.tsx', '.vue', '.d.ts'],
       },
       alias: {
-        extensions: ['.vue', '.js', '.ts', '.scss', '.d.ts'],
+        extensions: ['.vue', '.js', '.ts', '.tsx', '.scss', '.d.ts'],
         map: [['@/shared', './src/shared']],
       },
     },
