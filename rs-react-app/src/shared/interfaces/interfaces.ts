@@ -32,6 +32,17 @@ export interface PokemonType {
   readonly game_indices: [];
 }
 
+export interface PokemonList {
+  name: string;
+  url: string;
+}
+
+export interface FetchType {
+  next: string;
+  previous: string;
+  results: PokemonList[];
+}
+
 export interface MainPageState {
   readonly query: string;
   readonly data: PokemonType[];
@@ -56,4 +67,8 @@ export interface SearchInputType {
 
 export interface ErrorButtonType {
   readonly onError: (generateError: Error) => void;
+}
+
+export interface PaginationButtonsProps {
+  readonly onMove: (arr: PokemonList[]) => void;
 }

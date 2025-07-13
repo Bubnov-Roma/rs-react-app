@@ -2,9 +2,8 @@ import { SearchInput } from './search-section/search-input';
 import React from 'react';
 import { Table } from './table-section';
 import { fetchData, getPokemon, getSearchPokemon } from '../api';
-import { ErrorBoundary, getStorage } from '@/shared';
-import type { PokemonType } from '@/shared';
-import { ErrorButton } from './buttons-section';
+import { ErrorBoundary, getStorage, type PokemonList } from '@/shared';
+import { ErrorButton, PaginationButtons } from './buttons-section';
 
 export class MainPage extends React.Component {
   state = {
@@ -13,6 +12,15 @@ export class MainPage extends React.Component {
     loading: false,
     error: null,
   };
+
+  getAllPromises = async (promises: PokemonList[]) => {
+    const resultArr = promises.map(
+      async (data: { url: string }) => await getPokemon(data.url)
+    );
+    const data = await Promise.all(resultArr);
+    return data;
+  };
+
   componentDidMount = async () => {
     const storageValue = getStorage();
     if (storageValue) {
@@ -23,22 +31,19 @@ export class MainPage extends React.Component {
   handleSearch = async (searchValue?: string) => {
     this.setState({ loading: true });
     if (!searchValue || searchValue.startsWith(' ')) {
-      const query = await fetchData();
-      const all: PokemonType[] = query.results.map(
-        async (data: { url: string }) => await getPokemon(data.url)
-      );
+      const response = await fetchData();
       try {
-        const listOfPokemon: PokemonType[] = await Promise.all(all);
-        this.setState({ data: listOfPokemon, error: null, loading: false });
+        if (typeof response !== 'string' && response) {
+          const data = await this.getAllPromises(response?.results);
+          this.setState({ data: data, error: null, loading: false });
+        }
       } catch (error) {
         if (error instanceof Error)
           this.setState({ error: error.message, loading: false });
       }
     } else {
       try {
-        const data: PokemonType = await getSearchPokemon(
-          searchValue.toLowerCase()
-        );
+        const data = await getSearchPokemon(searchValue.toLowerCase());
         if (data instanceof Error) {
           this.setState({ error: data.message, loading: false });
         } else this.setState({ data: [data], error: null, loading: false });
@@ -56,6 +61,12 @@ export class MainPage extends React.Component {
     }
   };
 
+  handlePagination = async (arr: PokemonList[]) => {
+    this.setState({ loading: true });
+    const data = await this.getAllPromises(arr);
+    this.setState({ data: data, error: null, loading: false });
+  };
+
   render() {
     const { data, loading, error } = this.state;
 
@@ -64,8 +75,9 @@ export class MainPage extends React.Component {
         <div>
           <ErrorBoundary>
             <SearchInput onSearch={this.handleSearch} />
-            <div>Loading...</div>
+            <PaginationButtons onMove={this.handlePagination} />
             <ErrorButton onError={this.handleError} />
+            <div>Loading...</div>
           </ErrorBoundary>
         </div>
       );
@@ -76,8 +88,9 @@ export class MainPage extends React.Component {
         <div>
           <ErrorBoundary>
             <SearchInput onSearch={this.handleSearch} />
-            <div>{error}</div>
+            <PaginationButtons onMove={this.handlePagination} />
             <ErrorButton onError={this.handleError} />
+            <div>{error}</div>
           </ErrorBoundary>
         </div>
       );
@@ -87,8 +100,9 @@ export class MainPage extends React.Component {
       <div>
         <ErrorBoundary>
           <SearchInput onSearch={this.handleSearch} />
-          <Table data={data} />
+          <PaginationButtons onMove={this.handlePagination} />
           <ErrorButton onError={this.handleError} />
+          <Table data={data} />
         </ErrorBoundary>
       </div>
     );
