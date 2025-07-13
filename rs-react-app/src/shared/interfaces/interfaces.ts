@@ -53,3 +53,7 @@ export interface CardListType {
 export interface SearchInputType {
   readonly onSearch: (searchValue: string) => void;
 }
+
+export interface ErrorButtonType {
+  readonly onError: (generateError: Error) => void;
+}

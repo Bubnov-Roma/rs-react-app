@@ -4,6 +4,7 @@ import { Table } from './table-section';
 import { fetchData, getPokemon, getSearchPokemon } from '../api';
 import { ErrorBoundary, getStorage } from '@/shared';
 import type { PokemonType } from '@/shared';
+import { ErrorButton } from './buttons-section';
 
 export class MainPage extends React.Component {
   state = {
@@ -48,15 +49,23 @@ export class MainPage extends React.Component {
     }
   };
 
+  handleError = (generateError: Error) => {
+    this.setState({ error: null, loading: false });
+    if (generateError) {
+      this.setState({ error: generateError.message, loading: false });
+    }
+  };
+
   render() {
     const { data, loading, error } = this.state;
 
     if (loading) {
       return (
         <div>
-          <SearchInput onSearch={this.handleSearch} />
           <ErrorBoundary>
-            <p>Loading...</p>
+            <SearchInput onSearch={this.handleSearch} />
+            <div>Loading...</div>
+            <ErrorButton onError={this.handleError} />
           </ErrorBoundary>
         </div>
       );
@@ -65,17 +74,21 @@ export class MainPage extends React.Component {
     if (error) {
       return (
         <div>
-          <SearchInput onSearch={this.handleSearch} />
-          <ErrorBoundary>{error}</ErrorBoundary>
+          <ErrorBoundary>
+            <SearchInput onSearch={this.handleSearch} />
+            <div>{error}</div>
+            <ErrorButton onError={this.handleError} />
+          </ErrorBoundary>
         </div>
       );
     }
 
     return (
       <div>
-        <SearchInput onSearch={this.handleSearch} />
         <ErrorBoundary>
+          <SearchInput onSearch={this.handleSearch} />
           <Table data={data} />
+          <ErrorButton onError={this.handleError} />
         </ErrorBoundary>
       </div>
     );
