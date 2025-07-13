@@ -1,1 +1,1 @@
-export * from './get-pokemon';
+export * from './api-client';

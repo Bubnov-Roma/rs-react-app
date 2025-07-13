@@ -1,5 +1,5 @@
 import React from 'react';
-import { fetchData, getPokemon } from '../../api';
+import { getListOfPokemon } from '../../api';
 import type { PaginationButtonsProps } from '@/shared';
 import style from './style.module.css';
 
@@ -10,26 +10,26 @@ export class PaginationButtons extends React.Component<PaginationButtonsProps> {
   };
 
   async componentDidMount() {
-    const response = await fetchData();
-    if (typeof response !== 'string' && response)
+    const response = await getListOfPokemon();
+    if (response && !(response instanceof Error))
       this.setState({ prev: response.previous, next: response.next });
   }
 
   handlePrevClick = async () => {
-    const response = await getPokemon(this.state.prev);
-    if (typeof response !== 'string' && response) {
+    const response = await getListOfPokemon(this.state.prev);
+    if (response && !(response instanceof Error)) {
       this.setState({ prev: response?.previous, next: response?.next });
-      const data = await getPokemon(response.previous);
-      if (typeof data !== 'string' && data) this.props.onMove(data?.results);
+      const data = await getListOfPokemon(response.previous);
+      if (data && !(data instanceof Error)) this.props.onMove(data?.results);
     }
   };
 
   handleNextClick = async () => {
-    const response = await getPokemon(this.state.next);
-    if (typeof response !== 'string' && response) {
+    const response = await getListOfPokemon(this.state.next);
+    if (response && !(response instanceof Error)) {
       this.setState({ prev: response?.previous, next: response?.next });
-      const data = await getPokemon(response.next);
-      if (typeof data !== 'string' && data) this.props.onMove(data?.results);
+      const data = await getListOfPokemon(response.next);
+      if (data && !(data instanceof Error)) this.props.onMove(data?.results);
     }
   };
 

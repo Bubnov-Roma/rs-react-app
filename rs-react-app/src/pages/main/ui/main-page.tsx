@@ -1,7 +1,7 @@
 import { SearchInput } from './search-section/search-input';
 import React from 'react';
 import { Table } from './table-section';
-import { fetchData, getPokemon, getSearchPokemon } from '../api';
+import { getListOfPokemon, getOnePokemon } from '../api';
 import { ErrorBoundary, getStorage, type PokemonList } from '@/shared';
 import { ErrorButton, PaginationButtons } from './buttons-section';
 import style from './style.module.css';
@@ -17,7 +17,7 @@ export class MainPage extends React.Component {
 
   getAllPromises = async (promises: PokemonList[]) => {
     const resultArr = promises.map(
-      async (data: { url: string }) => await getPokemon(data.url)
+      async (data: { url: string }) => await getListOfPokemon(data.url)
     );
     const data = await Promise.all(resultArr);
     return data;
@@ -33,25 +33,19 @@ export class MainPage extends React.Component {
   handleSearch = async (searchValue?: string) => {
     this.setState({ loading: true });
     if (!searchValue || searchValue.startsWith(' ')) {
-      const response = await fetchData();
-      try {
-        if (typeof response !== 'string' && response) {
-          const data = await this.getAllPromises(response?.results);
-          this.setState({ data: data, error: null, loading: false });
-        }
-      } catch (error) {
-        if (error instanceof Error)
-          this.setState({ error: error.message, loading: false });
+      const response = await getListOfPokemon();
+      if (response instanceof Error) {
+        this.setState({ error: response.message, loading: false });
+      } else {
+        const data = await this.getAllPromises(response?.results);
+        this.setState({ data: data, error: null, loading: false });
       }
     } else {
-      try {
-        const data = await getSearchPokemon(searchValue.toLowerCase());
-        if (data instanceof Error) {
-          this.setState({ error: data.message, loading: false });
-        } else this.setState({ data: [data], error: null, loading: false });
-      } catch (error) {
-        if (error instanceof Error)
-          this.setState({ error: error.message, loading: false });
+      const response = await getOnePokemon(searchValue.toLowerCase());
+      if (response instanceof Error) {
+        this.setState({ error: response.message, loading: false });
+      } else {
+        this.setState({ data: [response], error: null, loading: false });
       }
     }
   };
