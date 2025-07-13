@@ -1,5 +1,7 @@
 import { Component, type ErrorInfo } from 'react';
-import type { ErrorBoundaryProps, ErrorBoundaryState } from './interfaces';
+import type { ErrorBoundaryProps, ErrorBoundaryState } from '../interfaces';
+import { setStorage } from '../storage';
+import style from './style.module.css';
 
 export class ErrorBoundary extends Component<
   ErrorBoundaryProps,
@@ -25,9 +27,21 @@ export class ErrorBoundary extends Component<
     }
   }
 
+  refreshPage = () => {
+    setStorage('');
+    window.location.reload();
+  };
+
   render() {
     if (this.state.hasError) {
-      return <h1>Something went wrong.</h1>;
+      return (
+        <div className={style.error_boundary}>
+          <h1 className={style.message}>Something went wrong.</h1>
+          <button className={style.button} onClick={this.refreshPage}>
+            Reload Page
+          </button>
+        </div>
+      );
     }
 
     return this.props.children;

@@ -1,5 +1,6 @@
 import type { ErrorButtonType } from '@/shared';
 import React from 'react';
+import style from './style.module.css';
 
 export class ErrorButton extends React.Component<ErrorButtonType> {
   handleError = () => {
@@ -15,6 +16,10 @@ export class ErrorButton extends React.Component<ErrorButtonType> {
     }
   };
   render() {
-    return <button onClick={this.handleError}>Error Button</button>;
+    return (
+      <button className={style.button} onClick={this.handleError}>
+        Error Button
+      </button>
+    );
   }
 }

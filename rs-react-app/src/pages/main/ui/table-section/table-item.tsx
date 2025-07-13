@@ -6,13 +6,13 @@ export class TableItem extends React.Component<PokemonType> {
   render() {
     const { name, sprites, types, height, weight, game_indices } = this.props;
     return (
-      <>
+      <tr className={style.cards}>
         <td className={style.card_name}>
           <img src={sprites['front_default']} />
           {name}
         </td>
         <td>
-          <ul>
+          <ul className={style.card_ul}>
             <li className="cardBlock">
               <span className="cardCell">Type: </span>
               <span className="cardCell">{types[0]['type']['name']}</span>
@@ -31,7 +31,7 @@ export class TableItem extends React.Component<PokemonType> {
             </li>
           </ul>
         </td>
-      </>
+      </tr>
     );
   }
 }

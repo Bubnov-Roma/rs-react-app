@@ -19,11 +19,7 @@ export class Table extends React.Component<CardListType> {
               <p>Error: {data.message}</p>
             </tr>
           ) : (
-            data.map((item, index) => (
-              <tr key={index}>
-                <TableItem key={index} {...item} />
-              </tr>
-            ))
+            data.map((item, index) => <TableItem key={index} {...item} />)
           )}
         </tbody>
       </table>

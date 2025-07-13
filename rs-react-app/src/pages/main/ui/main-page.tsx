@@ -4,12 +4,14 @@ import { Table } from './table-section';
 import { fetchData, getPokemon, getSearchPokemon } from '../api';
 import { ErrorBoundary, getStorage, type PokemonList } from '@/shared';
 import { ErrorButton, PaginationButtons } from './buttons-section';
+import style from './style.module.css';
+import { ErrorComponent, LoadingComponent } from './components-section';
 
 export class MainPage extends React.Component {
   state = {
     query: '',
     data: [],
-    loading: false,
+    loading: true,
     error: null,
   };
 
@@ -70,39 +72,19 @@ export class MainPage extends React.Component {
   render() {
     const { data, loading, error } = this.state;
 
-    if (loading) {
-      return (
-        <div>
-          <ErrorBoundary>
-            <SearchInput onSearch={this.handleSearch} />
-            <PaginationButtons onMove={this.handlePagination} />
-            <ErrorButton onError={this.handleError} />
-            <div>Loading...</div>
-          </ErrorBoundary>
-        </div>
-      );
-    }
-
-    if (error) {
-      return (
-        <div>
-          <ErrorBoundary>
-            <SearchInput onSearch={this.handleSearch} />
-            <PaginationButtons onMove={this.handlePagination} />
-            <ErrorButton onError={this.handleError} />
-            <div>{error}</div>
-          </ErrorBoundary>
-        </div>
-      );
-    }
-
     return (
-      <div>
+      <div className={style.main}>
+        <SearchInput onSearch={this.handleSearch} />
+        <PaginationButtons onMove={this.handlePagination} />
+        <ErrorButton onError={this.handleError} />
         <ErrorBoundary>
-          <SearchInput onSearch={this.handleSearch} />
-          <PaginationButtons onMove={this.handlePagination} />
-          <ErrorButton onError={this.handleError} />
-          <Table data={data} />
+          {loading ? (
+            <LoadingComponent />
+          ) : error ? (
+            <ErrorComponent />
+          ) : (
+            <Table data={data} />
+          )}
         </ErrorBoundary>
       </div>
     );

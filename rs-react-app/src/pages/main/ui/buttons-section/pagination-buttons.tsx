@@ -1,6 +1,7 @@
 import React from 'react';
 import { fetchData, getPokemon } from '../../api';
 import type { PaginationButtonsProps } from '@/shared';
+import style from './style.module.css';
 
 export class PaginationButtons extends React.Component<PaginationButtonsProps> {
   state = {
@@ -26,7 +27,7 @@ export class PaginationButtons extends React.Component<PaginationButtonsProps> {
   handleNextClick = async () => {
     const response = await getPokemon(this.state.next);
     if (typeof response !== 'string' && response) {
-      this.setState({ prev: response.previous, next: response.next });
+      this.setState({ prev: response?.previous, next: response?.next });
       const data = await getPokemon(response.next);
       if (typeof data !== 'string' && data) this.props.onMove(data?.results);
     }
@@ -34,10 +35,14 @@ export class PaginationButtons extends React.Component<PaginationButtonsProps> {
 
   render() {
     return (
-      <>
-        <button onClick={this.handlePrevClick}>previous</button>
-        <button onClick={this.handleNextClick}>next</button>
-      </>
+      <div className={style.pagination_buttons}>
+        <button className={style.button} onClick={this.handlePrevClick}>
+          Previous
+        </button>
+        <button className={style.button} onClick={this.handleNextClick}>
+          Next
+        </button>
+      </div>
     );
   }
 }

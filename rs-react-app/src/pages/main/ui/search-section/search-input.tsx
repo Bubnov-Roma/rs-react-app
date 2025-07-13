@@ -1,6 +1,7 @@
 import { getStorage, setStorage, type SearchInputType } from '@/shared';
 import React from 'react';
 import { type ChangeEvent } from 'react';
+import style from './style.module.css';
 
 export class SearchInput extends React.Component<SearchInputType> {
   state = {
@@ -31,15 +32,20 @@ export class SearchInput extends React.Component<SearchInputType> {
 
   render() {
     return (
-      <div>
-        <form onSubmit={this.handleSubmit}>
+      <div className={style.search_block}>
+        <form className={style.form} onSubmit={this.handleSubmit}>
           <input
+            className={style.input}
             type="text"
             value={this.state.searchValue}
             onChange={this.handleInputChange}
             placeholder="Enter Name Pokemon"
           />
-          <button type="submit" onClick={this.handleSubmit}>
+          <button
+            className={style.button}
+            type="submit"
+            onClick={this.handleSubmit}
+          >
             Search
           </button>
         </form>
