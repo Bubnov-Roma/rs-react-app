@@ -1,4 +1,4 @@
-import type { PokemonType } from '../interfaces';
+import type { PokemonType } from '@/shared';
 
 export const getPokemon = async (
   url: string

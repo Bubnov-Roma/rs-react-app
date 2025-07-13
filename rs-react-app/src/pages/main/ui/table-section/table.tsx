@@ -1,8 +1,8 @@
 import React from 'react';
-import { CardItem } from './card-item';
+import { TableItem } from './table-item';
 import type { CardListType } from '@/shared';
 
-export class CardList extends React.Component<CardListType> {
+export class Table extends React.Component<CardListType> {
   render() {
     const { data } = this.props;
     return (
@@ -21,7 +21,7 @@ export class CardList extends React.Component<CardListType> {
           ) : (
             data.map((item, index) => (
               <tr key={index}>
-                <CardItem key={index} {...item} />
+                <TableItem key={index} {...item} />
               </tr>
             ))
           )}

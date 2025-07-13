@@ -1,5 +1,5 @@
 import { MainPage } from '@/pages';
-import { ErrorBoundary } from '@/shared/ui/error-boundary';
+import { ErrorBoundary } from '@/shared';
 import React from 'react';
 
 export class App extends React.Component {

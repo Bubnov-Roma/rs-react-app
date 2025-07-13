@@ -1,27 +1,22 @@
 import { SearchInput } from './search-section/search-input';
 import React from 'react';
-import { CardList } from './table-section';
-import {
-  fetchData,
-  getPokemon,
-  getSearchPokemon,
-} from '@/shared/api/get-pokemon';
-import { ErrorBoundary } from '@/shared/ui/error-boundary';
-import type { MainPageProps, MainPageState, PokemonType } from '@/shared';
+import { Table } from './table-section';
+import { fetchData, getPokemon, getSearchPokemon } from '../api';
+import { ErrorBoundary, getStorage } from '@/shared';
+import type { PokemonType } from '@/shared';
 
-export class MainPage extends React.Component<MainPageState, MainPageProps> {
-  constructor(props: MainPageProps) {
-    super(props);
-    this.state = {
-      query: '',
-      data: [],
-      loading: false,
-      error: null,
-    };
-  }
-
+export class MainPage extends React.Component {
+  state = {
+    query: '',
+    data: [],
+    loading: false,
+    error: null,
+  };
   componentDidMount = async () => {
-    this.handleSearch();
+    const storageValue = getStorage();
+    if (storageValue) {
+      this.handleSearch(storageValue);
+    } else this.handleSearch();
   };
 
   handleSearch = async (searchValue?: string) => {
@@ -36,7 +31,7 @@ export class MainPage extends React.Component<MainPageState, MainPageProps> {
         this.setState({ data: listOfPokemon, error: null, loading: false });
       } catch (error) {
         if (error instanceof Error)
-          this.setState({ error: error, loading: false });
+          this.setState({ error: error.message, loading: false });
       }
     } else {
       try {
@@ -44,11 +39,11 @@ export class MainPage extends React.Component<MainPageState, MainPageProps> {
           searchValue.toLowerCase()
         );
         if (data instanceof Error) {
-          this.setState({ error: data, loading: false });
+          this.setState({ error: data.message, loading: false });
         } else this.setState({ data: [data], error: null, loading: false });
       } catch (error) {
         if (error instanceof Error)
-          this.setState({ error: error, loading: false });
+          this.setState({ error: error.message, loading: false });
       }
     }
   };
@@ -71,7 +66,7 @@ export class MainPage extends React.Component<MainPageState, MainPageProps> {
       return (
         <div>
           <SearchInput onSearch={this.handleSearch} />
-          <ErrorBoundary>{error.message}</ErrorBoundary>
+          <ErrorBoundary>{error}</ErrorBoundary>
         </div>
       );
     }
@@ -80,7 +75,7 @@ export class MainPage extends React.Component<MainPageState, MainPageProps> {
       <div>
         <SearchInput onSearch={this.handleSearch} />
         <ErrorBoundary>
-          <CardList data={data} />
+          <Table data={data} />
         </ErrorBoundary>
       </div>
     );

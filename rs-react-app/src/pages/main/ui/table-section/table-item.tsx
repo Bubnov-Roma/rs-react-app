@@ -2,7 +2,7 @@ import React from 'react';
 import style from './style.module.css';
 import type { PokemonType } from '@/shared';
 
-export class CardItem extends React.Component<PokemonType> {
+export class TableItem extends React.Component<PokemonType> {
   render() {
     const { name, sprites, types, height, weight, game_indices } = this.props;
     return (
