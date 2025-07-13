@@ -61,6 +61,10 @@ export interface CardListType {
   readonly data: PokemonType[];
 }
 
+export interface ErrorComponentProps {
+  readonly message: null;
+}
+
 export interface SearchInputType {
   readonly onSearch: (searchValue: string) => void;
 }

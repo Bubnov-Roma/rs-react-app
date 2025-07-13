@@ -75,7 +75,7 @@ export class MainPage extends React.Component {
           {loading ? (
             <LoadingComponent />
           ) : error ? (
-            <ErrorComponent />
+            <ErrorComponent message={this.state.error} />
           ) : (
             <Table data={data} />
           )}
