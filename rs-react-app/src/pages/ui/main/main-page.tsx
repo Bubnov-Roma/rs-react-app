@@ -25,6 +25,7 @@ export class MainPage extends React.Component<MainPageState, MainPageProps> {
   };
 
   handleSearch = async (searchValue?: string) => {
+    this.setState({ loading: true });
     if (!searchValue || searchValue.startsWith(' ')) {
       const query = await fetchData();
       const all: PokemonType[] = query.results.map(
@@ -32,9 +33,10 @@ export class MainPage extends React.Component<MainPageState, MainPageProps> {
       );
       try {
         const listOfPokemon: PokemonType[] = await Promise.all(all);
-        this.setState({ data: listOfPokemon, error: null });
+        this.setState({ data: listOfPokemon, error: null, loading: false });
       } catch (error) {
-        if (error instanceof Error) this.setState({ error: error });
+        if (error instanceof Error)
+          this.setState({ error: error, loading: false });
       }
     } else {
       try {
@@ -42,10 +44,11 @@ export class MainPage extends React.Component<MainPageState, MainPageProps> {
           searchValue.toLowerCase()
         );
         if (data instanceof Error) {
-          this.setState({ error: data });
-        } else this.setState({ data: [data], error: null });
+          this.setState({ error: data, loading: false });
+        } else this.setState({ data: [data], error: null, loading: false });
       } catch (error) {
-        if (error instanceof Error) this.setState({ error: error });
+        if (error instanceof Error)
+          this.setState({ error: error, loading: false });
       }
     }
   };
@@ -57,7 +60,9 @@ export class MainPage extends React.Component<MainPageState, MainPageProps> {
       return (
         <div>
           <SearchInput onSearch={this.handleSearch} />
-          <ErrorBoundary>{loading}</ErrorBoundary>
+          <ErrorBoundary>
+            <p>Loading...</p>
+          </ErrorBoundary>
         </div>
       );
     }
