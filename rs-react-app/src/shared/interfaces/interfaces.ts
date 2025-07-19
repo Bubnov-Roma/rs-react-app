@@ -29,7 +29,7 @@ export interface PokemonType {
   readonly types: MyType[];
   readonly height: string;
   readonly weight: string;
-  readonly game_indices: [];
+  readonly game_indices: number[];
 }
 
 export interface PokemonList {
@@ -62,7 +62,7 @@ export interface CardListType {
 }
 
 export interface ErrorComponentProps {
-  readonly message: null;
+  readonly message: string;
 }
 
 export interface SearchInputType {
