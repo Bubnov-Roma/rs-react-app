@@ -1,0 +1,19 @@
+.cards {
+  min-height: 130px;
+}
+
+.card_item {
+  height: 100%;
+}
+
+.card_name {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 122px;
+}
+
+.card_ul {
+  list-style-type: none;
+}
