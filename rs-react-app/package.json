@@ -11,7 +11,8 @@
     "format:fix": "prettier --write .",
     "format:check": "prettier ./src --check",
     "prepare": "cd .. && husky ./rs-react-app/.husky",
-    "test": "jest"
+    "test": "jest",
+    "test:coverage": "jest --coverage"
   },
   "dependencies": {
     "react": "^19.1.0",
