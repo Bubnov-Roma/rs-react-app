@@ -1,13 +1,16 @@
 import { Component, type ErrorInfo } from 'react';
 import type { ErrorBoundaryProps, ErrorBoundaryState } from '../interfaces';
-import { setStorage } from '../storage';
 import style from './style.module.css';
 
+interface PropsWithNavigate extends ErrorBoundaryProps {
+  navigate?: (path: string) => void;
+}
+
 export class ErrorBoundary extends Component<
-  ErrorBoundaryProps,
+  PropsWithNavigate,
   ErrorBoundaryState
 > {
-  constructor(props: ErrorBoundaryProps) {
+  constructor(props: PropsWithNavigate) {
     super(props);
     this.state = {
       hasError: false,
@@ -28,8 +31,9 @@ export class ErrorBoundary extends Component<
   }
 
   refreshPage = () => {
-    setStorage('');
-    window.location.reload();
+    const page = localStorage.getItem('page');
+    const numberPage = page ? parseInt(page, 10) : 1;
+    this.props.navigate?.(`/page/${numberPage}`);
   };
 
   render() {

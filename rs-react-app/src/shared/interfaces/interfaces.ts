@@ -66,7 +66,8 @@ export interface ErrorComponentProps {
 }
 
 export interface SearchInputType {
-  readonly onSearch: (searchValue: string) => void;
+  readonly setStateIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  readonly stateIsLoading: boolean;
 }
 
 export interface ErrorButtonType {
@@ -75,4 +76,24 @@ export interface ErrorButtonType {
 
 export interface PaginationButtonsProps {
   readonly onMove: (arr: PokemonList[]) => void;
+}
+
+export interface DataListProps {
+  readonly data: PokemonList[];
+  readonly currentPage: number;
+  readonly itemsPerPage: number;
+}
+
+export interface PaginationProps {
+  readonly totalItems: number;
+  readonly itemsPerPage: number;
+  readonly onPageChange: (page: number) => void;
+}
+
+export interface AppContextProviderProps {
+  readonly children: React.ReactElement;
+}
+
+export interface HeaderProps {
+  readonly children: React.ReactElement;
 }

@@ -1,0 +1,141 @@
+.wrapper {
+  height: 24rem;
+  display: flex;
+  gap: 1rem;
+  min-width: 20rem;
+}
+
+.card_list {
+  flex: 1;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  text-align: center;
+}
+
+.card_item {
+  flex: 1;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 1rem 0;
+  box-sizing: border-box;
+}
+
+.card_name {
+  width: 100%;
+  display: flex;
+  align-self: anchor-center;
+  justify-content: center;
+  align-items: center;
+  letter-spacing: 0.3rem;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  color: #96b400;
+  width: min-content;
+  font-size: 0.8rem;
+}
+
+.card_img {
+  width: 100%;
+  max-width: 10rem;
+  margin: auto;
+}
+
+.card_ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.card_li {
+  display: flex;
+  justify-content: space-between;
+}
+
+.card_span {
+  font-size: 0.8rem;
+}
+
+.form_block {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.pagination_block {
+  padding: 1rem 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.form {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.input {
+  width: inherit;
+  border: 1px solid #d0d9a2;
+  border-radius: 8px 8px 8px;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.close_button,
+.button {
+  min-width: fit-content;
+  color: #d0d9a2;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+}
+
+.close_button:hover {
+  border-color: #96b400;
+  color: #96b400;
+}
+.close_button:focus,
+.close_button:focus-visible {
+  outline: 4px auto #d0d9a2;
+}
+
+.button {
+  padding: 0.6em 1.2em;
+}
+
+.page_number {
+  padding: 0.6em 1.2em;
+}
+
+.error {
+  color: red;
+  padding: 0.5rem 0;
+  text-align: center;
+}
+
+.nothing {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 2rem;
+  padding: 4rem 0 0 0;
+}
+
+@media screen and (width <= 600px) {
+  .card_name {
+    letter-spacing: 0.2rem;
+    font-size: 0.6rem;
+  }
+}

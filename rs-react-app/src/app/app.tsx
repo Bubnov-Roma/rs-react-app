@@ -1,12 +1,14 @@
-import { MainPage } from '@/pages';
-import { ErrorBoundary } from '@/shared';
+import { AppContextProvider, ErrorBoundary } from '@/shared';
 import React from 'react';
+import { Router } from './router';
 
 export class App extends React.Component {
   render() {
     return (
       <ErrorBoundary>
-        <MainPage />
+        <AppContextProvider>
+          <Router />
+        </AppContextProvider>
       </ErrorBoundary>
     );
   }
