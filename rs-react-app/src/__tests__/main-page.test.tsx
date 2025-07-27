@@ -1,44 +1,70 @@
+import { render, screen, fireEvent } from '@testing-library/react';
+import { MainPage } from '../pages';
+import { MemoryRouter } from 'react-router-dom';
+import { PageContext, SearchInputType } from '@/shared';
 import React from 'react';
-import { render, screen, waitFor } from '@testing-library/react';
-import { MainPage } from '../pages/main/ui';
 
-jest.mock('../pages/main/api/api-client.ts', () => ({
-  getListOfPokemon: jest.fn(),
-  getOnePokemon: jest.fn(),
+const mockNavigate = jest.fn();
+
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockNavigate,
+  Outlet: () => <div data-testid="mock-outlet">Outlet Content</div>,
 }));
 
-jest.mock('@/shared', () => ({
-  getStorage: jest.fn(),
-  ErrorBoundary: ({ children }: { children: React.ReactNode }) => (
-    <div data-testid="error-boundary">{children}</div>
-  ),
-  ErrorComponent: ({ message }: { message: string }) => (
-    <div data-testid="error">{message}</div>
+jest.mock('../pages/main/ui/components', () => ({
+  SearchInput: ({ setStateIsLoading, stateIsLoading }: SearchInputType) => (
+    <div data-testid="mock-search">
+      <button onClick={() => setStateIsLoading(true)}>Trigger Loading</button>
+      <div>{stateIsLoading ? 'Loading On' : 'Loading Off'}</div>
+    </div>
   ),
 }));
 
-import { getStorage } from '@/shared';
+jest.mock('@/shared', () => {
+  const actual = jest.requireActual('@/shared');
+  return {
+    ...actual,
+    LoadingComponent: () => <div data-testid="mock-loading">Loading...</div>,
+  };
+});
 
-import { getOnePokemon } from '../pages/main/api/api-client.ts';
+describe('MainPage', () => {
+  const renderWithProviders = () =>
+    render(
+      <PageContext.Provider
+        value={{ Filtered: jest.fn(), setNumberPage: jest.fn(), numberPage: 1 }}
+      >
+        <MemoryRouter>
+          <MainPage />
+        </MemoryRouter>
+      </PageContext.Provider>
+    );
 
-describe('Main page component test', () => {
-  const mockGetOnePokemon = getOnePokemon as jest.Mock;
-  const mockGetStorage = getStorage as jest.Mock;
-  beforeEach(() => {
-    jest.clearAllMocks();
+  it('renders button and navigates to About', () => {
+    renderWithProviders();
+
+    const button = screen.getByRole('button', { name: /About/i });
+    fireEvent.click(button);
+
+    expect(mockNavigate).toHaveBeenCalledWith('/about', { replace: true });
   });
 
-  test('when mounted, calls handleSearch with the stored value', async () => {
-    mockGetStorage.mockReturnValue('pikachu');
+  it('renders SearchInput and Outlet initially', () => {
+    renderWithProviders();
 
-    mockGetOnePokemon.mockResolvedValue({ name: 'pikachu', id: 25 });
+    expect(screen.getByTestId('mock-search')).toBeInTheDocument();
+    expect(screen.getByTestId('mock-outlet')).toBeInTheDocument();
+  });
 
-    render(<MainPage />);
+  it('renders LoadingComponent when loading is triggered', () => {
+    renderWithProviders();
 
-    await waitFor(() => {
-      expect(screen.queryByTestId('loading')).not.toBeInTheDocument();
+    const triggerButton = screen.getByRole('button', {
+      name: /Trigger Loading/i,
     });
+    fireEvent.click(triggerButton);
 
-    expect(mockGetOnePokemon).toHaveBeenCalledWith('pikachu');
+    expect(screen.getByTestId('mock-loading')).toBeInTheDocument();
   });
 });

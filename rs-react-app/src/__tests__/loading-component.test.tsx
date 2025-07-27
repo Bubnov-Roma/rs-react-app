@@ -1,10 +1,10 @@
 import React from 'react';
 import { render } from '@testing-library/react';
-import { LoadingComponent } from '../pages/main/ui/components-section';
 import style from '../pages/main/ui/components-section/style.module.css';
+import { LoadingComponent } from '@/shared';
 
 describe('Loading component test', () => {
-  test('Displaying loading with correct classes', () => {
+  it('Displaying loading with correct classes', () => {
     render(<LoadingComponent />);
 
     const containerDiv = document.querySelector(`.${style.spinner_container}`);

@@ -7,7 +7,7 @@ const BuggyComponent = () => {
 };
 
 describe('ErrorBoundary component tests', () => {
-  test('should render children when no error occurs', () => {
+  it('should render children when no error occurs', () => {
     render(
       <ErrorBoundary>
         <div>Test content</div>
@@ -16,7 +16,7 @@ describe('ErrorBoundary component tests', () => {
     expect(screen.getByText('Test content')).toBeInTheDocument();
   });
 
-  test('should render fallback UI when an error occurs', () => {
+  it('should render fallback UI when an error occurs', () => {
     const consoleErrorSpy = jest
       .spyOn(console, 'error')
       .mockImplementation(() => {});

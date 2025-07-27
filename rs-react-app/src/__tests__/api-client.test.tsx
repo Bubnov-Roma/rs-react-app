@@ -1,4 +1,4 @@
-import { getListOfPokemon, getOnePokemon } from '../pages/main/api';
+import { getAllPokemon, getOnePokemon } from '../pages/main/api';
 
 describe('API functions', () => {
   beforeAll(() => {
@@ -8,45 +8,47 @@ describe('API functions', () => {
   });
 
   beforeEach(() => {
-    jest.restoreAllMocks();
+    jest.clearAllMocks();
   });
 
-  test('getListOfPokemon returns data on successful fetch', async () => {
+  it('getAllPokemon returns data on successful fetch', async () => {
     const mockData = { results: [{ name: 'bulbasaur' }] };
+
     (global.fetch as jest.Mock).mockResolvedValue({
       ok: true,
       json: async () => mockData,
-    } as Response);
+    });
 
-    const data = await getListOfPokemon();
+    const data = await getAllPokemon();
 
     expect(global.fetch).toHaveBeenCalledWith(
-      'https://pokeapi.co/api/v2/pokemon/'
+      'https://pokeapi.co/api/v2/pokemon?limit=100000&offset=0'
     );
     expect(data).toEqual(mockData);
   });
 
-  test('getListOfPokemon returns error on unsuccessful response', async () => {
-    jest.spyOn(global, 'fetch').mockResolvedValue({
+  it('getAllPokemon returns error on failed fetch', async () => {
+    (global.fetch as jest.Mock).mockResolvedValue({
       ok: false,
       status: 404,
       json: async () => ({}),
-    } as Response);
+    });
 
-    const data = await getListOfPokemon();
+    const data = await getAllPokemon();
 
     expect(global.fetch).toHaveBeenCalledWith(
-      'https://pokeapi.co/api/v2/pokemon/'
+      'https://pokeapi.co/api/v2/pokemon?limit=100000&offset=0'
     );
     expect(data).toBeInstanceOf(Error);
   });
 
-  test('getOnePokemon returns data on successful fetch', async () => {
+  it('getOnePokemon returns data on successful fetch', async () => {
     const mockData = { name: 'bulbasaur', id: 1 };
+
     (global.fetch as jest.Mock).mockResolvedValue({
       ok: true,
       json: async () => mockData,
-    } as Response);
+    });
 
     const data = await getOnePokemon('bulbasaur');
 
@@ -56,12 +58,12 @@ describe('API functions', () => {
     expect(data).toEqual(mockData);
   });
 
-  test('getOnePokemon returns an error if response fails', async () => {
+  it('getOnePokemon returns error on failed fetch', async () => {
     (global.fetch as jest.Mock).mockResolvedValue({
       ok: false,
       status: 500,
       json: async () => ({}),
-    } as Response);
+    });
 
     const data = await getOnePokemon('bulbasaur');
 

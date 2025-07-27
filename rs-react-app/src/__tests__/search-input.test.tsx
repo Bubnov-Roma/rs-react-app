@@ -1,61 +1,90 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
-import { SearchInput } from '../pages/main/ui/';
+import { SearchInput } from '../pages/main/ui/components';
+import { PageContext } from '@/shared';
+import { MemoryRouter } from 'react-router-dom';
 
-jest.mock('@/shared', () => ({
-  getStorage: jest.fn(),
-  setStorage: jest.fn(),
-  type: jest.requireActual('@/shared').type,
-}));
+const mockNavigate = jest.fn();
+jest.mock('react-router-dom', () => {
+  const original = jest.requireActual('react-router-dom');
+  return {
+    ...original,
+    useNavigate: () => mockNavigate,
+  };
+});
 
-import { getStorage, setStorage } from '@/shared';
+jest.mock('@/shared', () => {
+  const original = jest.requireActual('@/shared');
+  return {
+    ...original,
+    useLocalStorage: (key: string) => {
+      const store = {
+        storageValue: '',
+        page: 1,
+      };
+      return [store[key], jest.fn()];
+    },
+  };
+});
 
-describe('SearchInput component tests', () => {
-  const mockOnSearch = jest.fn();
+describe('SearchInput', () => {
+  const mockSetStateIsLoading = jest.fn();
+  const mockFiltered = jest.fn();
+  const mockSetNumberPage = jest.fn();
+
+  const renderWithContext = () => {
+    return render(
+      <PageContext.Provider
+        value={{
+          Filtered: mockFiltered,
+          numberPage: 1,
+          setNumberPage: mockSetNumberPage,
+          pageContext: [],
+        }}
+      >
+        <MemoryRouter>
+          <SearchInput
+            setStateIsLoading={mockSetStateIsLoading}
+            stateIsLoading={false}
+          />
+        </MemoryRouter>
+      </PageContext.Provider>
+    );
+  };
 
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  test('should initialize the value from getStorage and call onSearch when mounted', () => {
-    (getStorage as jest.Mock).mockReturnValue('Bulbasaur');
+  it('renders input and button', () => {
+    renderWithContext();
 
-    render(<SearchInput onSearch={mockOnSearch} />);
-
-    const input = screen.getByPlaceholderText(
-      'Enter Name Pokemon'
-    ) as HTMLInputElement;
-    expect(input.value).toBe('Bulbasaur');
-
-    expect(mockOnSearch).toHaveBeenCalledWith('Bulbasaur');
+    expect(
+      screen.getByPlaceholderText(/Enter Name Pokemon/i)
+    ).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Search/i })).toBeInTheDocument();
   });
 
-  test('updates state when text is entered', () => {
-    (getStorage as jest.Mock).mockReturnValue('');
-    render(<SearchInput onSearch={mockOnSearch} />);
+  it('handles input change', () => {
+    renderWithContext();
+    const input = screen.getByPlaceholderText(/Enter Name Pokemon/i);
 
-    const input = screen.getByPlaceholderText(
-      'Enter Name Pokemon'
-    ) as HTMLInputElement;
+    fireEvent.change(input, { target: { value: 'bulbasaur' } });
 
-    fireEvent.change(input, { target: { value: 'Charmander' } });
-    expect(input.value).toBe('Charmander');
+    expect((input as HTMLInputElement).value).toBe('bulbasaur');
   });
 
-  test('when submitting, calls setStorage and onSearch with the current value', () => {
-    (getStorage as jest.Mock).mockReturnValue('');
-    render(<SearchInput onSearch={mockOnSearch} />);
+  it('submits the form and calls handlers', () => {
+    renderWithContext();
+    const input = screen.getByPlaceholderText(/Enter Name Pokemon/i);
+    const button = screen.getByRole('button', { name: /Search/i });
 
-    const input = screen.getByPlaceholderText(
-      'Enter Name Pokemon'
-    ) as HTMLInputElement;
-    const button = screen.getByText('Search') as HTMLButtonElement;
-
-    fireEvent.change(input, { target: { value: 'Pikachu' } });
-
+    fireEvent.change(input, { target: { value: 'pikachu' } });
     fireEvent.click(button);
 
-    expect(setStorage).toHaveBeenCalledWith('Pikachu');
-    expect(mockOnSearch).toHaveBeenCalledWith('Pikachu');
+    expect(mockSetStateIsLoading).toHaveBeenCalledTimes(2);
+    expect(mockFiltered).toHaveBeenCalledWith('pikachu');
+    expect(mockSetNumberPage).toHaveBeenCalledWith(1);
+    expect(mockNavigate).toHaveBeenCalledWith('/page/1', { replace: true });
   });
 });
