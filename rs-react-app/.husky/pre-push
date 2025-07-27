@@ -1,1 +1,1 @@
-npm run test:coverage
+cd rs-react-app npm run test:coverage
