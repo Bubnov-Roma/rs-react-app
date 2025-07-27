@@ -82,7 +82,7 @@ export const Pagination = ({
           pattern="[0-9]*"
           value={inputValue}
           onChange={handleInputChange}
-          placeholder={`rom 1 to ${totalPages}`}
+          placeholder={`From 1 to ${totalPages}`}
         />
         <button type="submit">Submit</button>
       </form>
