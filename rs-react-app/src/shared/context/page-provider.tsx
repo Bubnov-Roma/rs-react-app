@@ -1,24 +1,24 @@
 import { getAllPokemon } from '@/pages/main/api';
 import { useEffect, useState } from 'react';
-import { AppContextProviderProps } from './interfaces';
-import { PageContext } from './context';
-import { useLocalStorage } from './use-local-storage';
+import { AppContextProviderProps, PokemonList } from '../interfaces';
+import { PageContext } from './contexts';
+import { useStorage } from '../hooks/use-storage';
 
-export const AppContextProvider = ({ children }: AppContextProviderProps) => {
-  const [pageContext, setPageContext] = useState(null);
+export const PageContextProvider = ({ children }: AppContextProviderProps) => {
+  const [pageContext, setPageContext] = useState<PokemonList[]>(null);
   const [isLoaded, setIsLoaded] = useState(false);
   const [initialValue, setInitialValue] = useState(null);
-  const [stateValue] = useLocalStorage('storageValue', '');
-  const [numberPage, setNumberPage] = useState(null);
+  const { storedValue } = useStorage('storageValue', '');
+  const [numberPage, setNumberPage] = useState<number>(null);
 
   useEffect(() => {
     async function fetchData() {
       setIsLoaded(true);
       try {
         const response = await getAllPokemon();
-        if (stateValue) {
+        if (storedValue) {
           const result = response.results.filter((item) =>
-            item.name.includes(stateValue)
+            item.name.includes(storedValue)
           );
           setIsLoaded(false);
           setInitialValue(response.results);
@@ -34,7 +34,7 @@ export const AppContextProvider = ({ children }: AppContextProviderProps) => {
       }
     }
     fetchData();
-  }, [stateValue]);
+  }, [storedValue]);
 
   const Filtered = (value: string) => {
     setIsLoaded(true);

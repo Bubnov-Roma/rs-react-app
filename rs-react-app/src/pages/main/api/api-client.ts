@@ -1,4 +1,4 @@
-import type { FetchType, PokemonType } from '@/shared';
+import type { FetchType, PokemonType } from '@/shared/index';
 
 const BASE_URL = 'https://pokeapi.co/api/v2/pokemon/';
 const LIMIT_1e_URL = 'https://pokeapi.co/api/v2/pokemon?limit=100000&offset=0';

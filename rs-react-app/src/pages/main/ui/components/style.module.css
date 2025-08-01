@@ -2,7 +2,6 @@
   height: 24rem;
   display: flex;
   gap: 1rem;
-  min-width: 20rem;
 }
 
 .card_list {
@@ -10,11 +9,16 @@
   height: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: space-around;
-  text-align: center;
+  justify-content: space-evenly;
 }
 
 .card_item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.card {
   flex: 1;
   height: 100%;
   display: flex;
@@ -32,8 +36,6 @@
   align-items: center;
   letter-spacing: 0.3rem;
   text-align: center;
-  justify-content: center;
-  align-items: center;
   color: #96b400;
   width: min-content;
   font-size: 0.8rem;
@@ -66,12 +68,20 @@
   width: 100%;
 }
 
+.pagination {
+  text-align: center;
+}
+
 .pagination_block {
+  margin: auto;
   padding: 1rem 0;
   display: flex;
   align-items: center;
   justify-content: center;
   width: 100%;
+  gap: 1rem;
+  box-sizing: border-box;
+  max-width: 19rem;
 }
 
 .form {
@@ -81,7 +91,8 @@
   gap: 0.5rem;
 }
 
-.input {
+.input,
+.pagination_input {
   width: inherit;
   border: 1px solid #d0d9a2;
   border-radius: 8px 8px 8px;
@@ -118,10 +129,16 @@
   padding: 0.6em 1.2em;
 }
 
-.error {
-  color: red;
+.error,
+.info {
   padding: 0.5rem 0;
   text-align: center;
+}
+.info {
+  color: #96b400;
+}
+.error {
+  color: #b48a00;
 }
 
 .nothing {

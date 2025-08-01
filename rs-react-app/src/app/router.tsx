@@ -5,6 +5,12 @@ import {
   PaginatedList,
   ProductDetail,
 } from '@/pages';
+import {
+  ErrorBoundary,
+  Layout,
+  PageContextProvider,
+  ThemeProvider,
+} from '@/shared';
 import { useEffect } from 'react';
 import {
   createBrowserRouter,
@@ -22,27 +28,41 @@ function MainRedirect(): undefined {
 }
 
 const router = createBrowserRouter([
-  { path: '/', element: <MainRedirect /> },
-  { path: '/about', element: <AboutPage /> },
   {
-    path: '/page',
-    element: <MainPage />,
+    path: '/',
+    element: <Layout />,
     children: [
+      { path: '/', element: <MainRedirect /> },
+      { path: '/about', element: <AboutPage /> },
       {
-        path: '/page/:page',
-        element: <PaginatedList />,
+        path: '/page',
+        element: <MainPage />,
         children: [
           {
-            path: '/page/:page/:pokemonName',
-            element: <ProductDetail />,
+            path: '/page/:page',
+            element: <PaginatedList />,
+            children: [
+              {
+                path: '/page/:page/:pokemonName',
+                element: <ProductDetail />,
+              },
+            ],
           },
         ],
       },
+      { path: '*', element: <NotFoundPage /> },
     ],
   },
-  { path: '*', element: <NotFoundPage /> },
 ]);
 
 export function Router() {
-  return <RouterProvider router={router} />;
+  return (
+    <ThemeProvider>
+      <ErrorBoundary>
+        <PageContextProvider>
+          <RouterProvider router={router} />
+        </PageContextProvider>
+      </ErrorBoundary>
+    </ThemeProvider>
+  );
 }

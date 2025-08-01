@@ -1,5 +1,5 @@
 import { render, screen, fireEvent } from '@testing-library/react';
-import { AboutPage } from '../pages';
+import { AboutPage } from '@/pages';
 import { PageContext } from '@/shared';
 import { useNavigate } from 'react-router-dom';
 

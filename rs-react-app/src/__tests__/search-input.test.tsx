@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
-import { SearchInput } from '../pages/main/ui/components';
+import { SearchInput } from '@/pages/main/ui/components';
 import { PageContext } from '@/shared';
 import { MemoryRouter } from 'react-router-dom';
 
@@ -17,7 +17,7 @@ jest.mock('@/shared', () => {
   const original = jest.requireActual('@/shared');
   return {
     ...original,
-    useLocalStorage: (key: string) => {
+    useStorage: (key: string) => {
       const store = {
         storageValue: '',
         page: 1,

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Card } from './card';
 import { getOnePokemon } from '../../api';
-import { LoadingComponent } from '@/shared';
+import { LoadingComponent } from '@/shared/index';
 
 export const ProductDetail = () => {
   const { pokemonName } = useParams();

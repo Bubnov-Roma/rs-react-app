@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import { PaginatedList } from '../pages/main/ui/components/paginated-list';
+import { PaginatedList } from '@/pages/main/ui/components/paginated-list';
 import { DataListProps, PageContext, PaginationProps } from '@/shared';
 import { MemoryRouter } from 'react-router-dom';
 

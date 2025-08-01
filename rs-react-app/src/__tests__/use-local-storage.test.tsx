@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
-import { useLocalStorage } from '../shared';
+import { useStorage } from '@/shared';
 
 type TestComponentProps = {
   storageKey: string;
@@ -8,7 +8,7 @@ type TestComponentProps = {
 };
 
 const TestComponent = ({ storageKey, initial }: TestComponentProps) => {
-  const [value, setValue] = useLocalStorage(storageKey, initial);
+  const [value, setValue] = useStorage(storageKey, initial);
 
   return (
     <div>
@@ -18,7 +18,7 @@ const TestComponent = ({ storageKey, initial }: TestComponentProps) => {
   );
 };
 
-describe('useLocalStorage', () => {
+describe('useStorage', () => {
   const storageKey = 'testKey';
 
   beforeEach(() => {

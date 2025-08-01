@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import { ErrorBoundary } from '../shared';
+import { ErrorBoundary } from '../shared/context/contexts';
 
 const BuggyComponent = () => {
   throw new Error('Test error');

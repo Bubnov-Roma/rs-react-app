@@ -31,18 +31,31 @@ a:focus {
   color: #fff;
 }
 
-body {
+body,
+html {
+  width: 100%;
+  transition:
+    background 0.3s,
+    color 0.3s;
   margin: 0;
   display: flex;
-  place-items: center;
+  flex-direction: column;
   min-width: 320px;
   min-height: 100vh;
-  align-items: center;
-  justify-content: center;
+}
+
+body.theme__light {
+  background-color: #fff;
+  color: #000;
+}
+
+body.theme__dark {
+  background-color: #222;
+  color: #eee;
 }
 
 h1 {
-  line-height: 1.1;
+  margin: 1rem 0;
 }
 
 button {
@@ -51,14 +64,15 @@ button {
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #1a1a1a;
   cursor: pointer;
   transition: border-color 0.25s;
   padding: 0.6em 1.2em;
 }
+
 button:hover {
   border-color: #96b400;
 }
+
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;

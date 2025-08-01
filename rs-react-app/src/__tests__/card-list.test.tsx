@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { CardList } from '../pages/main/ui/components/card-list';
 import { MemoryRouter } from 'react-router-dom';
-import type { PokemonList } from '@/shared';
+import type { PokemonList } from '@/shared/index';
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),

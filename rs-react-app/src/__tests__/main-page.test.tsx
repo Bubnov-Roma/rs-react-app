@@ -1,5 +1,5 @@
 import { render, screen, fireEvent } from '@testing-library/react';
-import { MainPage } from '../pages';
+import { MainPage } from '@/pages';
 import { MemoryRouter } from 'react-router-dom';
 import { PageContext, SearchInputType } from '@/shared';
 import React from 'react';

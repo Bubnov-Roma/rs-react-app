@@ -93,7 +93,23 @@ export interface PaginationProps {
 export interface AppContextProviderProps {
   readonly children: React.ReactElement;
 }
+export interface PageContextType {
+  readonly isLoaded: boolean;
+  readonly pageContext: PokemonList[];
+  readonly setPageContext: React.Dispatch<React.SetStateAction<PokemonList[]>>;
+  readonly Filtered: (value: string) => void;
+  readonly numberPage: number;
+  readonly setNumberPage: React.Dispatch<React.SetStateAction<number>>;
+}
 
-export interface HeaderProps {
-  readonly children: React.ReactElement;
+export interface UseLocalStorageType<T> {
+  readonly storedValue: T;
+  readonly setStoredValue: (value: T) => void;
+}
+
+export type Theme = 'light' | 'dark';
+
+export interface ThemeContextType {
+  readonly theme: Theme;
+  readonly toggleTheme: () => void;
 }

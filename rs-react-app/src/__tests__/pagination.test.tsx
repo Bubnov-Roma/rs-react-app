@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
-import { Pagination } from '../pages/main/ui/components/pagination';
+import { Pagination } from '@/pages/main/ui/components/pagination';
 import { PageContext } from '@/shared';
 import { MemoryRouter } from 'react-router-dom';
 
@@ -18,7 +18,7 @@ jest.mock('@/shared', () => {
   const originalModule = jest.requireActual('@/shared');
   return {
     ...originalModule,
-    useLocalStorage: () => [1, jest.fn()],
+    useStorage: () => [1, jest.fn()],
   };
 });
 

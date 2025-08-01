@@ -13,7 +13,7 @@ export const Card = (props: PokemonType) => {
   };
 
   return (
-    <div className={style.card_item}>
+    <div className={style.card}>
       <img
         src={sprites['front_default']}
         className={style.card_img}

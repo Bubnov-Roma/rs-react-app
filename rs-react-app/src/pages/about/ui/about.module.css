@@ -1,0 +1,69 @@
+.about_page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  box-sizing: border-box;
+  height: 100vh;
+  padding: 0 20%;
+}
+
+.title {
+  font-size: 3.4rem;
+  font-weight: bold;
+  margin: 0;
+}
+
+.aboutContent {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.text {
+  width: 100%;
+  font-size: 1rem;
+}
+
+.rs {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 30px;
+}
+
+.logo {
+  width: 3rem;
+  height: 3rem;
+  background-image: url('../../../public/assets/img/rs.png');
+  background-size: 100%;
+  border-radius: 10%;
+}
+
+.navigate {
+  width: 100%;
+  padding: 0.6em 1.2em;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  transition: border-color 0.25s;
+}
+.navigate:hover {
+  border-color: #96b400;
+}
+.navigate:focus,
+.navigate:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}
+
+@media screen and (width <= 600px) {
+  .text {
+    font-size: 0.7rem;
+    display: flex;
+    box-sizing: border-box;
+    max-width: 20rem;
+  }
+}

@@ -1,23 +1,9 @@
-import { useContext, type ReactElement } from 'react';
+import { type ReactElement } from 'react';
 import styles from './about.module.css';
-import { useNavigate } from 'react-router-dom';
-import { Header, PageContext } from '@/shared';
 
 export function AboutPage(): ReactElement {
-  const { numberPage } = useContext(PageContext);
-  const navigate = useNavigate();
-
-  const handleClick = () => {
-    navigate(`/page/${numberPage}`, { replace: true });
-  };
-
   return (
-    <div className={styles.aboutPage}>
-      <Header>
-        <button className={styles.navigate} onClick={handleClick}>
-          Main
-        </button>
-      </Header>
+    <div className={styles.about_page}>
       <p className={styles.title}>About</p>
       <div className={styles.aboutContent}>
         <p className={styles.text}>
@@ -34,6 +20,8 @@ export function AboutPage(): ReactElement {
         </p>
         <div className={styles.rs}>
           <a
+            target="_blank"
+            rel="noopener noreferrer"
             className={styles.logo}
             href="https://rs.school/courses/reactjs"
           ></a>
