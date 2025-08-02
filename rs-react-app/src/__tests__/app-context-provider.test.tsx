@@ -1,14 +1,13 @@
 import React, { useContext } from 'react';
 import { render, waitFor, screen } from '@testing-library/react';
-import { AppContextProvider } from '../shared';
-import { PageContext } from '../shared/context';
+import { PageContextProvider, PageContext } from '@/shared';
 import { getAllPokemon } from '../pages/main/api';
 
 jest.mock('../pages/main/api', () => ({
   getAllPokemon: jest.fn(),
 }));
 
-describe('AppContextProvider', () => {
+describe('PageContextProvider', () => {
   const mockResults = [
     { name: 'pikachu' },
     { name: 'bulbasaur' },
@@ -40,9 +39,9 @@ describe('AppContextProvider', () => {
 
   it('provides filtered context based on localStorage value', async () => {
     render(
-      <AppContextProvider>
+      <PageContextProvider>
         <TestComponent />
-      </AppContextProvider>
+      </PageContextProvider>
     );
 
     await waitFor(() =>
@@ -55,9 +54,9 @@ describe('AppContextProvider', () => {
   it('provides full data when no localStorage value', async () => {
     localStorage.removeItem('storageValue');
     render(
-      <AppContextProvider>
+      <PageContextProvider>
         <TestComponent />
-      </AppContextProvider>
+      </PageContextProvider>
     );
 
     await waitFor(() =>

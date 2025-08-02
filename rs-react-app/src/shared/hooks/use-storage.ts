@@ -1,7 +1,11 @@
 import { useState, useEffect } from 'react';
+import { UseLocalStorageType } from '../interfaces';
 
-export function useLocalStorage(key: string, initialValue: string) {
-  const [storedValue, setStoredValue] = useState(() => {
+export function useStorage<T>(
+  key: string,
+  initialValue: T
+): UseLocalStorageType<T> {
+  const [storedValue, setStoredValue] = useState<T>(() => {
     try {
       const item = window.localStorage.getItem(key);
       return item ? JSON.parse(item) : initialValue;
@@ -18,5 +22,5 @@ export function useLocalStorage(key: string, initialValue: string) {
       console.error(error);
     }
   }, [key, storedValue]);
-  return [storedValue, setStoredValue];
+  return { storedValue, setStoredValue };
 }

@@ -7,11 +7,8 @@ export function NotFoundPage(): ReactElement {
   const navigate = useNavigate();
   const { numberPage, setNumberPage } = useContext(PageContext);
   const handleClick = () => {
-    if (numberPage) navigate(`/page/${numberPage}`);
-    else {
-      setNumberPage(1);
-      navigate(`/page/${numberPage}`);
-    }
+    if (!numberPage) setNumberPage(1);
+    navigate(`/page/${numberPage}`);
   };
   return (
     <>

@@ -22,7 +22,14 @@ describe('NotFoundPage', () => {
   const renderComponent = (numberPage: number | null) => {
     return render(
       <PageContext.Provider
-        value={{ numberPage, setNumberPage: mockSetNumberPage }}
+        value={{
+          numberPage,
+          setNumberPage: mockSetNumberPage,
+          isLoaded: true,
+          pageContext: [],
+          setPageContext: jest.fn(),
+          Filtered: jest.fn(),
+        }}
       >
         <NotFoundPage />
       </PageContext.Provider>

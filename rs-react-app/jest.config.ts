@@ -13,6 +13,7 @@ const config: Config = {
     '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
     '^@/shared(.*)$': '<rootDir>/src/shared$1',
     '^@/pages(.*)$': '<rootDir>/src/pages$1',
+    '^@/(.*)$': '<rootDir>/src/$1',
   },
   coverageDirectory: 'coverage',
   collectCoverage: true,

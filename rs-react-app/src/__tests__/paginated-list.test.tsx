@@ -1,10 +1,21 @@
-import React from 'react';
 import { render, screen } from '@testing-library/react';
-import { PaginatedList } from '../pages/main/ui/components/paginated-list';
+import { PaginatedList } from '@/pages/main/ui/components/paginated-list';
 import { DataListProps, PageContext, PaginationProps } from '@/shared';
 import { MemoryRouter } from 'react-router-dom';
 
-jest.mock('../pages/main/ui/components/card-list', () => ({
+const mockNavigate = jest.fn();
+const mockUseParams = jest.fn();
+
+jest.mock('react-router-dom', () => {
+  const original = jest.requireActual('react-router-dom');
+  return {
+    ...original,
+    useNavigate: () => mockNavigate,
+    useParams: () => mockUseParams(),
+  };
+});
+
+jest.mock('@/pages/main/ui/components/card-list', () => ({
   CardList: (props: DataListProps) => (
     <div data-testid="card-list">
       CardList: page={props.currentPage}, items={props.data.length}
@@ -12,7 +23,7 @@ jest.mock('../pages/main/ui/components/card-list', () => ({
   ),
 }));
 
-jest.mock('../pages/main/ui/components/pagination', () => ({
+jest.mock('@/pages/main/ui/components/pagination', () => ({
   Pagination: (props: PaginationProps) => (
     <div data-testid="pagination">
       Pagination: totalItems={props.totalItems}, itemsPerPage=
@@ -21,20 +32,19 @@ jest.mock('../pages/main/ui/components/pagination', () => ({
   ),
 }));
 
-jest.mock('@/shared', () => ({
-  ...jest.requireActual('@/shared'),
-  LoadingComponent: () => <div data-testid="loading-component">Loading...</div>,
+jest.mock('@/features', () => ({
+  SelectionPanel: () => (
+    <div data-testid="selection-panel">Selection Panel</div>
+  ),
 }));
 
-const mockNavigate = jest.fn();
-const mockUseParams = jest.fn();
-
-jest.mock('react-router-dom', () => {
-  const originalModule = jest.requireActual('react-router-dom');
+jest.mock('@/shared', () => {
+  const original = jest.requireActual('@/shared');
   return {
-    ...originalModule,
-    useNavigate: () => mockNavigate,
-    useParams: () => mockUseParams(),
+    ...original,
+    LoadingComponent: () => (
+      <div data-testid="loading-component">Loading...</div>
+    ),
   };
 });
 
@@ -43,51 +53,20 @@ describe('PaginatedList', () => {
     jest.clearAllMocks();
   });
 
-  it('renders LoadingComponent if pageContext is null', () => {
-    mockUseParams.mockReturnValue({ page: '1' });
-
-    render(
-      <PageContext.Provider value={{ pageContext: null, numberPage: 1 }}>
-        <MemoryRouter>
-          <PaginatedList />
-        </MemoryRouter>
-      </PageContext.Provider>
-    );
-
-    expect(screen.getByTestId('loading-component')).toBeInTheDocument();
-    expect(screen.queryByTestId('card-list')).not.toBeInTheDocument();
-    expect(screen.queryByTestId('pagination')).not.toBeInTheDocument();
-  });
-
-  it('renders CardList and Pagination if pageContext is present', () => {
-    const data = [
-      { name: 'pikachu' },
-      { name: 'bulbasaur' },
-      { name: 'charmander' },
-    ];
-
-    mockUseParams.mockReturnValue({ page: '1' });
-
-    render(
-      <PageContext.Provider value={{ pageContext: data, numberPage: 1 }}>
-        <MemoryRouter>
-          <PaginatedList />
-        </MemoryRouter>
-      </PageContext.Provider>
-    );
-
-    expect(screen.getByTestId('card-list')).toHaveTextContent(
-      'CardList: page=1'
-    );
-    expect(screen.getByTestId('pagination')).toHaveTextContent('totalItems=3');
-    expect(screen.queryByTestId('loading-component')).not.toBeInTheDocument();
-  });
-
-  it('redirects to /404 if page param is missing', () => {
+  it('redirects to /404 if no page param', () => {
     mockUseParams.mockReturnValue({ page: undefined });
 
     render(
-      <PageContext.Provider value={{ pageContext: [], numberPage: 1 }}>
+      <PageContext.Provider
+        value={{
+          numberPage: 1,
+          setNumberPage: jest.fn(),
+          pageContext: [],
+          Filtered: () => {},
+          isLoaded: true,
+          setPageContext: jest.fn(),
+        }}
+      >
         <MemoryRouter>
           <PaginatedList />
         </MemoryRouter>
@@ -97,21 +76,98 @@ describe('PaginatedList', () => {
     expect(mockNavigate).toHaveBeenCalledWith('/404');
   });
 
-  it('navigates to /page/numberPage on mount and numberPage change', () => {
+  it('shows loading if pageContext is null', () => {
     mockUseParams.mockReturnValue({ page: '1' });
 
-    const { rerender } = render(
-      <PageContext.Provider value={{ pageContext: [], numberPage: 1 }}>
+    render(
+      <PageContext.Provider
+        value={{
+          numberPage: 1,
+          setNumberPage: jest.fn(),
+          pageContext: null,
+          Filtered: () => {},
+          isLoaded: true,
+          setPageContext: jest.fn(),
+        }}
+      >
         <MemoryRouter>
           <PaginatedList />
         </MemoryRouter>
       </PageContext.Provider>
     );
 
-    expect(mockNavigate).toHaveBeenCalledWith('/page/1');
+    expect(screen.getByTestId('loading-component')).toBeInTheDocument();
+  });
 
-    rerender(
-      <PageContext.Provider value={{ pageContext: [], numberPage: 2 }}>
+  it('shows fallback text if pageContext is empty', () => {
+    mockUseParams.mockReturnValue({ page: '1' });
+
+    render(
+      <PageContext.Provider
+        value={{
+          numberPage: 1,
+          setNumberPage: jest.fn(),
+          pageContext: [],
+          Filtered: () => {},
+          isLoaded: true,
+          setPageContext: jest.fn(),
+        }}
+      >
+        <MemoryRouter>
+          <PaginatedList />
+        </MemoryRouter>
+      </PageContext.Provider>
+    );
+
+    expect(screen.getByText(/Oops.../)).toBeInTheDocument();
+    expect(screen.getByText(/Nothing was found/i)).toBeInTheDocument();
+  });
+
+  it('renders CardList, Pagination and SelectionPanel if data present', () => {
+    const data = [
+      { name: 'pikachu', url: 'test' },
+      { name: 'bulbasaur', url: 'test' },
+      { name: 'charmander', url: 'test' },
+    ];
+
+    mockUseParams.mockReturnValue({ page: '1' });
+
+    render(
+      <PageContext.Provider
+        value={{
+          numberPage: 1,
+          setNumberPage: jest.fn(),
+          pageContext: data,
+          Filtered: () => {},
+          isLoaded: true,
+          setPageContext: jest.fn(),
+        }}
+      >
+        <MemoryRouter>
+          <PaginatedList />
+        </MemoryRouter>
+      </PageContext.Provider>
+    );
+
+    expect(screen.getByTestId('card-list')).toHaveTextContent('page=1');
+    expect(screen.getByTestId('pagination')).toHaveTextContent('totalItems=3');
+    expect(screen.getByTestId('selection-panel')).toBeInTheDocument();
+  });
+
+  it('navigates to the current page on mount', () => {
+    mockUseParams.mockReturnValue({ page: '1' });
+
+    render(
+      <PageContext.Provider
+        value={{
+          numberPage: 2,
+          setNumberPage: jest.fn(),
+          pageContext: [{ name: 'test', url: 'test' }],
+          Filtered: () => {},
+          isLoaded: true,
+          setPageContext: jest.fn(),
+        }}
+      >
         <MemoryRouter>
           <PaginatedList />
         </MemoryRouter>

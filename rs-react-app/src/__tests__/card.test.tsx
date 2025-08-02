@@ -39,7 +39,14 @@ describe('Card component', () => {
   it('renders pokemon data correctly', () => {
     render(
       <PageContext.Provider
-        value={{ numberPage: 2, setNumberPage: mockSetNumberPage }}
+        value={{
+          numberPage: 2,
+          setNumberPage: mockSetNumberPage,
+          isLoaded: true,
+          pageContext: [],
+          setPageContext: jest.fn(),
+          Filtered: (): void => {},
+        }}
       >
         <MemoryRouter>
           <Card {...mockPokemon} />
@@ -64,7 +71,14 @@ describe('Card component', () => {
   it('navigates to current page on Close button click', () => {
     render(
       <PageContext.Provider
-        value={{ numberPage: 2, setNumberPage: mockSetNumberPage }}
+        value={{
+          numberPage: 2,
+          setNumberPage: mockSetNumberPage,
+          isLoaded: true,
+          pageContext: [],
+          setPageContext: jest.fn(),
+          Filtered: (): void => {},
+        }}
       >
         <MemoryRouter>
           <Card {...mockPokemon} />
@@ -79,10 +93,17 @@ describe('Card component', () => {
     expect(mockNavigate).toHaveBeenCalledWith('/page/2');
   });
 
-  it('sets numberPage to 1 and navigates when numberPage is null', () => {
+  it('sets numberPage to 1 and navigates to /page/null (because numberPage is still null)', () => {
     render(
       <PageContext.Provider
-        value={{ numberPage: null, setNumberPage: mockSetNumberPage }}
+        value={{
+          numberPage: null,
+          setNumberPage: mockSetNumberPage,
+          isLoaded: true,
+          pageContext: [],
+          setPageContext: jest.fn(),
+          Filtered: (): void => {},
+        }}
       >
         <MemoryRouter>
           <Card {...mockPokemon} />

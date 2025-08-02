@@ -4,6 +4,7 @@ import { Pagination } from './pagination';
 import { LoadingComponent, PageContext } from '@/shared';
 import { useNavigate, useParams } from 'react-router-dom';
 import style from './style.module.css';
+import { SelectionPanel } from '@/features';
 
 const ITEMS_PER_PAGE = 5;
 export const PaginatedList = () => {
@@ -48,6 +49,7 @@ export const PaginatedList = () => {
             itemsPerPage={ITEMS_PER_PAGE}
             onPageChange={handlePageChange}
           />
+          <SelectionPanel />
         </>
       )}
     </>

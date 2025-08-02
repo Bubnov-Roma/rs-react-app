@@ -3,7 +3,7 @@ import { render, screen, waitFor } from '@testing-library/react';
 import { ProductDetail } from '../pages/main/ui/components/product-detail';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { getOnePokemon } from '../pages/main/api';
-import { PokemonType } from '@/shared';
+import { PokemonType } from '@/shared/index';
 
 const mockNavigate = jest.fn();
 

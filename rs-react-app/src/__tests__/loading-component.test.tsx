@@ -1,7 +1,7 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 import style from '../pages/main/ui/components-section/style.module.css';
-import { LoadingComponent } from '@/shared';
+import { LoadingComponent } from '@/shared/index';
 
 describe('Loading component test', () => {
   it('Displaying loading with correct classes', () => {
