@@ -5,6 +5,7 @@ import { PageContext } from '@/shared';
 import { MemoryRouter } from 'react-router-dom';
 
 const mockNavigate = jest.fn();
+
 jest.mock('react-router-dom', () => {
   const original = jest.requireActual('react-router-dom');
   return {
@@ -13,16 +14,30 @@ jest.mock('react-router-dom', () => {
   };
 });
 
+const mockSetSearchValue = jest.fn();
+const mockSetStoredPage = jest.fn();
+
 jest.mock('@/shared', () => {
   const original = jest.requireActual('@/shared');
   return {
     ...original,
     useStorage: (key: string) => {
-      const store = {
-        storageValue: '',
-        page: 1,
+      if (key === 'storageValue') {
+        return {
+          storedValue: '',
+          setStoredValue: mockSetSearchValue,
+        };
+      }
+      if (key === 'page') {
+        return {
+          storedValue: 1,
+          setStoredValue: mockSetStoredPage,
+        };
+      }
+      return {
+        storedValue: null,
+        setStoredValue: jest.fn(),
       };
-      return [store[key], jest.fn()];
     },
   };
 });
@@ -40,6 +55,8 @@ describe('SearchInput', () => {
           numberPage: 1,
           setNumberPage: mockSetNumberPage,
           pageContext: [],
+          isLoaded: true,
+          setPageContext: jest.fn(),
         }}
       >
         <MemoryRouter>
@@ -83,8 +100,10 @@ describe('SearchInput', () => {
     fireEvent.click(button);
 
     expect(mockSetStateIsLoading).toHaveBeenCalledTimes(2);
+    expect(mockSetSearchValue).toHaveBeenCalledWith('pikachu');
     expect(mockFiltered).toHaveBeenCalledWith('pikachu');
     expect(mockSetNumberPage).toHaveBeenCalledWith(1);
+    expect(mockSetStoredPage).toHaveBeenCalledWith(1);
     expect(mockNavigate).toHaveBeenCalledWith('/page/1', { replace: true });
   });
 });

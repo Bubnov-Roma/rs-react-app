@@ -1,45 +1,30 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { AboutPage } from '@/pages';
-import { PageContext } from '@/shared';
-import { useNavigate } from 'react-router-dom';
-
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useNavigate: jest.fn(),
-}));
 
 describe('AboutPage', () => {
-  const mockNavigate = jest.fn();
-
-  beforeEach(() => {
-    (useNavigate as jest.Mock).mockReturnValue(mockNavigate);
-  });
-
-  afterEach(() => {
-    jest.clearAllMocks();
-  });
-
   it('renders title and content', () => {
-    render(
-      <PageContext.Provider value={{ numberPage: 3, setNumberPage: jest.fn() }}>
-        <AboutPage />
-      </PageContext.Provider>
-    );
+    render(<AboutPage />);
 
     expect(screen.getByText('About')).toBeInTheDocument();
-    expect(screen.getByText(/My name is Roma Bubnov/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(/Hello\. My name is Roma Bubnov\./i)
+    ).toBeInTheDocument();
+
+    expect(
+      screen.getByText(/I graduated from the Saratov State Conservatory/i)
+    ).toBeInTheDocument();
+
+    expect(
+      screen.getByText(/React.*focus further development/i)
+    ).toBeInTheDocument();
   });
 
-  it('navigates to the correct page on button click', () => {
-    render(
-      <PageContext.Provider value={{ numberPage: 3, setNumberPage: jest.fn() }}>
-        <AboutPage />
-      </PageContext.Provider>
-    );
+  it('renders external RS School link', () => {
+    render(<AboutPage />);
 
-    const button = screen.getByRole('button', { name: /Main/i });
-    fireEvent.click(button);
-
-    expect(mockNavigate).toHaveBeenCalledWith('/page/3', { replace: true });
+    const link = screen.getByRole('link');
+    expect(link).toHaveAttribute('href', 'https://rs.school/courses/reactjs');
+    expect(link).toHaveAttribute('target', '_blank');
+    expect(link).toHaveAttribute('rel', 'noopener noreferrer');
   });
 });

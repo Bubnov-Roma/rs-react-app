@@ -24,8 +24,11 @@ export const Pagination = ({
     if (numberPage) setCurrentPage(numberPage);
   }, [numberPage]);
 
-  const goToPage = (page: number) => {
-    event.preventDefault();
+  const goToPage = (
+    page: number,
+    event?: React.MouseEvent | React.KeyboardEvent
+  ) => {
+    event?.preventDefault();
     if (page >= 1 && page <= totalPages) {
       setCurrentPage(page);
       navigate(`?page=${page}`, { replace: true });
@@ -71,7 +74,7 @@ export const Pagination = ({
       <form className={style.form}>
         <div className={style.pagination_block}>
           <button
-            onClick={() => goToPage(currentPage - 1)}
+            onClick={(e) => goToPage(currentPage - 1, e)}
             disabled={currentPage === 1}
           >
             Prev
@@ -87,7 +90,7 @@ export const Pagination = ({
             onKeyDown={handleInputKeyDown}
           />
           <button
-            onClick={() => goToPage(currentPage + 1)}
+            onClick={(e) => goToPage(currentPage + 1, e)}
             disabled={currentPage === totalPages}
           >
             Next

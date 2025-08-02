@@ -1,6 +1,7 @@
 import { useAppDispatch } from '@/shared/hooks/use-app-dispatch';
 import { useAppSelector } from '@/shared/hooks/use-app-selector';
 import { clearSelected } from '../model';
+import { saveAs } from 'file-saver';
 import style from './style.module.css';
 
 export const SelectionPanel = () => {
@@ -27,14 +28,10 @@ export const SelectionPanel = () => {
 
     const filename = `${pokemon.length}_pokemon.csv`;
 
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = filename;
-    a.click();
-    URL.revokeObjectURL(url);
+    const blob = new Blob(['\ufeff', csvContent], {
+      type: 'data:text/csv; charset=utf-8,',
+    });
+    saveAs(blob, filename);
   };
 
   return (

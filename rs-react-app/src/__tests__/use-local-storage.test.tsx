@@ -8,12 +8,12 @@ type TestComponentProps = {
 };
 
 const TestComponent = ({ storageKey, initial }: TestComponentProps) => {
-  const [value, setValue] = useStorage(storageKey, initial);
+  const { storedValue, setStoredValue } = useStorage(storageKey, initial);
 
   return (
     <div>
-      <div>Current: {value}</div>
-      <button onClick={() => setValue('updated')}>Update</button>
+      <div>Current: {storedValue}</div>
+      <button onClick={() => setStoredValue('updated')}>Update</button>
     </div>
   );
 };

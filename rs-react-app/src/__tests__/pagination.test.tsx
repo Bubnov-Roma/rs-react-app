@@ -18,7 +18,10 @@ jest.mock('@/shared', () => {
   const originalModule = jest.requireActual('@/shared');
   return {
     ...originalModule,
-    useStorage: () => [1, jest.fn()],
+    useStorage: () => ({
+      storedValue: 1,
+      setStoredValue: jest.fn(),
+    }),
   };
 });
 
@@ -32,6 +35,10 @@ describe('Pagination component', () => {
         value={{
           numberPage: pageValue,
           setNumberPage: mockSetNumberPage,
+          isLoaded: true,
+          pageContext: [],
+          setPageContext: jest.fn(),
+          Filtered: jest.fn(),
         }}
       >
         <MemoryRouter>
@@ -52,8 +59,7 @@ describe('Pagination component', () => {
   it('renders input and buttons', () => {
     renderComponent();
 
-    expect(screen.getByPlaceholderText(/rom 1 to 2/i)).toBeInTheDocument();
-    expect(screen.getByText('Submit')).toBeInTheDocument();
+    expect(screen.getByPlaceholderText(/Page 1/i)).toBeInTheDocument();
     expect(screen.getByText('Prev')).toBeDisabled();
     expect(screen.getByText('Next')).not.toBeDisabled();
   });
@@ -61,7 +67,7 @@ describe('Pagination component', () => {
   it('shows error for non-numeric input', () => {
     renderComponent();
 
-    const input = screen.getByPlaceholderText(/rom 1 to/i);
+    const input = screen.getByPlaceholderText(/Page 1/i);
     fireEvent.change(input, { target: { value: 'abc' } });
 
     expect(
@@ -72,20 +78,19 @@ describe('Pagination component', () => {
   it('shows error for number out of range', () => {
     renderComponent();
 
-    const input = screen.getByPlaceholderText(/rom 1 to/i);
+    const input = screen.getByPlaceholderText(/Page 1/i);
     fireEvent.change(input, { target: { value: '10' } });
 
     expect(screen.getByText(/Enter a number from 1 to 2/i)).toBeInTheDocument();
   });
 
-  it('submits valid page number', () => {
+  it('submits valid page number with Enter key', () => {
     renderComponent();
 
-    const input = screen.getByPlaceholderText(/rom 1 to/i);
-    const button = screen.getByText('Submit');
+    const input = screen.getByPlaceholderText(/Page 1/i);
 
     fireEvent.change(input, { target: { value: '2' } });
-    fireEvent.click(button);
+    fireEvent.keyDown(input, { key: 'Enter', code: 'Enter', charCode: 13 });
 
     expect(mockNavigate).toHaveBeenCalledWith('?page=2', { replace: true });
     expect(mockOnPageChange).toHaveBeenCalledWith(2);
@@ -103,5 +108,7 @@ describe('Pagination component', () => {
 
     fireEvent.click(prevBtn);
     expect(mockNavigate).toHaveBeenCalledWith('?page=1', { replace: true });
+    expect(mockOnPageChange).toHaveBeenCalledWith(1);
+    expect(mockSetNumberPage).toHaveBeenCalledWith(1);
   });
 });
