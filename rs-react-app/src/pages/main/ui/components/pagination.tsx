@@ -97,9 +97,7 @@ export const Pagination = ({
       {error ? (
         <div className={style.error}>{error}</div>
       ) : (
-        <div className={style.info}>
-          Type page from 1 to {totalPages} and tap Enter
-        </div>
+        <div>Type page from 1 to {totalPages} and tap Enter</div>
       )}
     </div>
   );

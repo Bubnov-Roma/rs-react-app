@@ -1,3 +1,4 @@
+import { store } from '@/app/store/store';
 import { type ErrorInfo } from 'react';
 
 export interface ErrorBoundaryProps {
@@ -113,3 +114,6 @@ export interface ThemeContextType {
   readonly theme: Theme;
   readonly toggleTheme: () => void;
 }
+
+export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;
