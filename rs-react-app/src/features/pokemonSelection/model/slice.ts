@@ -24,6 +24,7 @@ const pokemonSelectionSlice = createSlice({
       state.selected[pokemon.name] = {
         data: pokemon,
         loading: false,
+        error: undefined,
       };
     },
     unselectedPokemon(state, action: PayloadAction<string>) {
@@ -34,9 +35,41 @@ const pokemonSelectionSlice = createSlice({
     clearSelected(state) {
       state.selected = {};
     },
+    setPokemonLoading(
+      state,
+      action: PayloadAction<{ name: string; loading: boolean }>
+    ) {
+      const { name, loading } = action.payload;
+      if (!state.selected[name]) {
+        state.selected[name] = { loading };
+      } else {
+        state.selected[name].loading = loading;
+        if (loading) {
+          state.selected[name].error = undefined;
+        }
+      }
+    },
+    setPokemonError(
+      state,
+      action: PayloadAction<{ name: string; error: string }>
+    ) {
+      const { name, error } = action.payload;
+      if (!state.selected[name]) {
+        state.selected[name] = { loading: false, error };
+      } else {
+        state.selected[name].error = error;
+        state.selected[name].loading = false;
+      }
+    },
   },
 });
 
-export const { addPokemon, unselectedPokemon, clearSelected } =
-  pokemonSelectionSlice.actions;
+export const {
+  addPokemon,
+  unselectedPokemon,
+  clearSelected,
+  setPokemonLoading,
+  setPokemonError,
+} = pokemonSelectionSlice.actions;
+
 export const pokemonSelectionReducer = pokemonSelectionSlice.reducer;

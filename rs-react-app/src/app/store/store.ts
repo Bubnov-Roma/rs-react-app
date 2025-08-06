@@ -1,6 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { persistStore } from 'redux-persist';
-import { pokemonApi } from '@/features/api/pokemon-api';
+import { pokemonApi } from '@/features/pokemon-api/pokemon-api';
 import { rootReducer } from './root-reducer';
 
 export const store = configureStore({
