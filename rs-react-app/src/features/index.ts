@@ -1,1 +1,2 @@
-export * from './pokemonSelection';
+export * from './pokemon-selection';
+export * from './api';

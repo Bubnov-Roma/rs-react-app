@@ -39,11 +39,9 @@ export interface PokemonList {
 }
 
 export interface FetchType {
-  next: string;
-  previous: string;
+  count: number;
   results: PokemonList[];
 }
-
 export interface MainPageState {
   readonly query: string;
   readonly data: PokemonType[];
