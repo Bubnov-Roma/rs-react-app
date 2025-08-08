@@ -98,7 +98,8 @@ export interface PageContextType {
   readonly setPageContext: React.Dispatch<React.SetStateAction<PokemonList[]>>;
   readonly Filtered: (value: string) => void;
   readonly numberPage: number;
-  readonly setNumberPage: React.Dispatch<React.SetStateAction<number>>;
+  readonly setNumberPage: (page: number | null) => void;
+  readonly refetch: () => void;
 }
 
 export interface UseLocalStorageType<T> {

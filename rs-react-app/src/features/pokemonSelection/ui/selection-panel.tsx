@@ -3,6 +3,7 @@ import { useAppSelector } from '@/shared/hooks/use-app-selector';
 import { clearSelected } from '../model';
 import { saveAs } from 'file-saver';
 import style from './style.module.css';
+import { RefetchButton } from './refetch-button';
 
 export const SelectionPanel = () => {
   const dispatch = useAppDispatch();
@@ -41,6 +42,7 @@ export const SelectionPanel = () => {
         <button onClick={handleDownload} style={{ marginLeft: '8px' }}>
           Download
         </button>
+        <RefetchButton />
       </div>
       <strong>{selectedWithData.length}</strong> Pokémon selected
     </div>
