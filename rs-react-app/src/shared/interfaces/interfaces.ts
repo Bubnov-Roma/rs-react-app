@@ -64,12 +64,6 @@ export interface CardListType {
 export interface ErrorComponentProps {
   readonly message: string;
 }
-
-export interface SearchInputType {
-  readonly setStateIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
-  readonly stateIsLoading: boolean;
-}
-
 export interface ErrorButtonType {
   readonly onError: (generateError: Error) => void;
 }

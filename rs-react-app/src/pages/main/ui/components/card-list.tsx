@@ -13,8 +13,8 @@ export const CardList = ({
   return (
     <div className={style.wrapper}>
       <div className={style.card_list}>
-        {currentItems.map((item, index) => (
-          <Link to={`/page/${currentPage}/${item.name}`} key={index}>
+        {currentItems.map((item) => (
+          <Link to={`/page/${currentPage}/${item.name}`} key={item.name}>
             {item.name.toLocaleUpperCase()}
           </Link>
         ))}

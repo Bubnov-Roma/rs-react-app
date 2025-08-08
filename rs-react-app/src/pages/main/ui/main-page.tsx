@@ -1,17 +1,18 @@
-import { useState } from 'react';
+import { useContext } from 'react';
 import {
   ErrorBoundaryNavigate,
   Header,
   LoadingComponent,
   Main,
+  PageContext,
 } from '@/shared';
 import style from './style.module.css';
 import { Outlet, useNavigate } from 'react-router-dom';
 import { SearchInput } from './components';
 
 export function MainPage() {
-  const [stateIsLoading, setStateIsLoading] = useState(false);
   const navigate = useNavigate();
+  const { isLoaded } = useContext(PageContext);
 
   const handleClick = () => {
     navigate(`/about`, { replace: true });
@@ -26,12 +27,9 @@ export function MainPage() {
       </Header>
       <Main>
         <>
-          <SearchInput
-            setStateIsLoading={setStateIsLoading}
-            stateIsLoading={stateIsLoading}
-          />
+          <SearchInput />
           <ErrorBoundaryNavigate>
-            {stateIsLoading ? <LoadingComponent /> : <Outlet />}
+            {isLoaded ? <LoadingComponent /> : <Outlet />}
           </ErrorBoundaryNavigate>
         </>
       </Main>

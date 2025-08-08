@@ -1,6 +1,6 @@
 import { getAllPokemon } from '@/pages/main/api';
 import { useEffect, useState } from 'react';
-import { AppContextProviderProps } from './interfaces';
+import { AppContextProviderProps, PokemonList } from './interfaces';
 import { PageContext } from './context';
 import { useLocalStorage } from './use-local-storage';
 
@@ -8,40 +8,49 @@ export const AppContextProvider = ({ children }: AppContextProviderProps) => {
   const [pageContext, setPageContext] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
   const [initialValue, setInitialValue] = useState(null);
-  const [stateValue] = useLocalStorage('storageValue', '');
+  const [storedValue] = useLocalStorage('storageValue', '');
+  const [, setStoredPage] = useLocalStorage('page', null);
   const [numberPage, setNumberPage] = useState(null);
 
+  const filterByName = (data: PokemonList[], name: string) => {
+    const result = data.filter((item) => item.name.includes(name));
+    setPageContext(result);
+  };
+
   useEffect(() => {
-    async function fetchData() {
+    const fetchData = async () => {
       setIsLoaded(true);
       try {
         const response = await getAllPokemon();
-        if (stateValue) {
-          const result = response.results.filter((item) =>
-            item.name.includes(stateValue)
-          );
-          setIsLoaded(false);
-          setInitialValue(response.results);
-          setPageContext(result);
-        } else {
-          setInitialValue(response.results);
-          setPageContext(response.results);
-          setIsLoaded(false);
-        }
+        setInitialValue(response.results);
+        setIsLoaded(false);
       } catch (error) {
         console.error(error);
         setIsLoaded(false);
       }
-    }
+    };
     fetchData();
-  }, [stateValue]);
+  }, []);
+
+  useEffect(() => {
+    if (!initialValue) return;
+    if (storedValue) {
+      filterByName(initialValue, storedValue);
+    } else {
+      setPageContext(initialValue);
+    }
+  }, [storedValue, initialValue]);
+
+  useEffect(() => {
+    console.log('useEffect');
+    if (numberPage) {
+      setStoredPage(numberPage);
+    }
+  }, [numberPage, setStoredPage]);
 
   const Filtered = (value: string) => {
-    setIsLoaded(true);
     if (initialValue) {
-      const result = initialValue.filter((item) => item.name.includes(value));
-      setIsLoaded(false);
-      setPageContext(result);
+      filterByName(initialValue, value);
     }
   };
 
@@ -50,7 +59,6 @@ export const AppContextProvider = ({ children }: AppContextProviderProps) => {
       value={{
         isLoaded,
         pageContext,
-        setPageContext,
         Filtered,
         numberPage,
         setNumberPage,
