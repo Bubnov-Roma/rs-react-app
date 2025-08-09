@@ -1,9 +1,10 @@
 import { store } from '@/app/store/store';
-import { type ErrorInfo } from 'react';
+import { type ErrorInfo, ReactNode } from 'react';
 
 export interface ErrorBoundaryProps {
-  readonly children: React.ReactNode;
+  readonly children: ReactNode;
   readonly onError?: (error: Error, errorInfo: ErrorInfo) => void;
+  readonly navigate?: (path: string) => void;
 }
 
 export interface ErrorBoundaryState {
@@ -39,11 +40,9 @@ export interface PokemonList {
 }
 
 export interface FetchType {
-  next: string;
-  previous: string;
+  count: number;
   results: PokemonList[];
 }
-
 export interface MainPageState {
   readonly query: string;
   readonly data: PokemonType[];
@@ -65,12 +64,6 @@ export interface CardListType {
 export interface ErrorComponentProps {
   readonly message: string;
 }
-
-export interface SearchInputType {
-  readonly setStateIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
-  readonly stateIsLoading: boolean;
-}
-
 export interface ErrorButtonType {
   readonly onError: (generateError: Error) => void;
 }
@@ -97,10 +90,12 @@ export interface AppContextProviderProps {
 export interface PageContextType {
   readonly isLoaded: boolean;
   readonly pageContext: PokemonList[];
-  readonly setPageContext: React.Dispatch<React.SetStateAction<PokemonList[]>>;
   readonly Filtered: (value: string) => void;
   readonly numberPage: number;
-  readonly setNumberPage: React.Dispatch<React.SetStateAction<number>>;
+  readonly setNumberPage: (page: number | null) => void;
+  readonly refetch: () => void;
+  readonly storedSearchValue: string;
+  readonly setStoredSearchValue: (value: string | null) => void;
 }
 
 export interface UseLocalStorageType<T> {

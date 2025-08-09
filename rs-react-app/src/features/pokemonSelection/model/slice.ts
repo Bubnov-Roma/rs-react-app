@@ -1,5 +1,5 @@
-import { PokemonList, PokemonType } from '@/shared';
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { PokemonType } from '@/shared';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface PokemonSelectionItem {
   data?: PokemonType;
@@ -15,27 +15,18 @@ const initialState: PokemonSelectionState = {
   selected: {},
 };
 
-export const fetchPokemon = createAsyncThunk<
-  PokemonType,
-  PokemonList,
-  { rejectValue: string }
->('pokemonSelection/fetchPokemon', async (pokemon, thunkAPI) => {
-  try {
-    const response = await fetch(pokemon.url);
-    if (!response.ok) {
-      return thunkAPI.rejectWithValue('Error loading the pokemon');
-    }
-    const data: PokemonType = await response.json();
-    return data;
-  } catch {
-    return thunkAPI.rejectWithValue('Error network');
-  }
-});
-
 const pokemonSelectionSlice = createSlice({
   name: 'pokemonSelection',
   initialState,
   reducers: {
+    addPokemon(state, action: PayloadAction<PokemonType>) {
+      const pokemon = action.payload;
+      state.selected[pokemon.name] = {
+        data: pokemon,
+        loading: false,
+        error: undefined,
+      };
+    },
     unselectedPokemon(state, action: PayloadAction<string>) {
       const { [action.payload]: _, ...rest } = state.selected;
       void _;
@@ -44,37 +35,41 @@ const pokemonSelectionSlice = createSlice({
     clearSelected(state) {
       state.selected = {};
     },
-  },
-  extraReducers: (builder) => {
-    builder
-      .addCase(fetchPokemon.pending, (state, action) => {
-        const name = action.meta.arg.name;
-        state.selected[name] = { loading: true };
-      })
-      .addCase(fetchPokemon.fulfilled, (state, action) => {
-        const { name, sprites, types, height, weight } = action.payload;
-        state.selected[name] = {
-          data: {
-            name,
-            sprites,
-            types,
-            height,
-            weight,
-            game_indices: [],
-          },
-          loading: false,
-        };
-      })
-      .addCase(fetchPokemon.rejected, (state, action) => {
-        const name = action.meta.arg.name;
-        state.selected[name] = {
-          loading: false,
-          error: action.payload || 'Unexpected error',
-        };
-      });
+    setPokemonLoading(
+      state,
+      action: PayloadAction<{ name: string; loading: boolean }>
+    ) {
+      const { name, loading } = action.payload;
+      if (!state.selected[name]) {
+        state.selected[name] = { loading };
+      } else {
+        state.selected[name].loading = loading;
+        if (loading) {
+          state.selected[name].error = undefined;
+        }
+      }
+    },
+    setPokemonError(
+      state,
+      action: PayloadAction<{ name: string; error: string }>
+    ) {
+      const { name, error } = action.payload;
+      if (!state.selected[name]) {
+        state.selected[name] = { loading: false, error };
+      } else {
+        state.selected[name].error = error;
+        state.selected[name].loading = false;
+      }
+    },
   },
 });
 
-export const { unselectedPokemon, clearSelected } =
-  pokemonSelectionSlice.actions;
+export const {
+  addPokemon,
+  unselectedPokemon,
+  clearSelected,
+  setPokemonLoading,
+  setPokemonError,
+} = pokemonSelectionSlice.actions;
+
 export const pokemonSelectionReducer = pokemonSelectionSlice.reducer;

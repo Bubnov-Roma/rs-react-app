@@ -1,59 +1,59 @@
-import { getAllPokemon } from '@/pages/main/api';
-import { useEffect, useState } from 'react';
-import { AppContextProviderProps, PokemonList } from '../interfaces';
-import { PageContext } from './contexts';
-import { useStorage } from '../hooks/use-storage';
+import { createContext, useCallback, useMemo } from 'react';
+import {
+  AppContextProviderProps,
+  PageContextType,
+  PokemonList,
+  useStorage,
+} from '@/shared';
+import { useGetAllPokemonQuery } from '@/features';
+
+export const PageContext = createContext<PageContextType>(null);
 
 export const PageContextProvider = ({ children }: AppContextProviderProps) => {
-  const [pageContext, setPageContext] = useState<PokemonList[]>(null);
-  const [isLoaded, setIsLoaded] = useState(false);
-  const [initialValue, setInitialValue] = useState(null);
-  const { storedValue } = useStorage('storageValue', '');
-  const [numberPage, setNumberPage] = useState<number>(null);
+  const { data, refetch, isFetching } = useGetAllPokemonQuery(undefined);
 
-  useEffect(() => {
-    async function fetchData() {
-      setIsLoaded(true);
-      try {
-        const response = await getAllPokemon();
-        if (storedValue) {
-          const result = response.results.filter((item) =>
-            item.name.includes(storedValue)
-          );
-          setIsLoaded(false);
-          setInitialValue(response.results);
-          setPageContext(result);
-        } else {
-          setInitialValue(response.results);
-          setPageContext(response.results);
-          setIsLoaded(false);
-        }
-      } catch (error) {
-        console.error(error);
-        setIsLoaded(false);
-      }
-    }
-    fetchData();
-  }, [storedValue]);
+  const {
+    storedValue: storedSearchValue,
+    setStoredValue: setStoredSearchValue,
+  } = useStorage('storageValue', '');
 
-  const Filtered = (value: string) => {
-    setIsLoaded(true);
-    if (initialValue) {
-      const result = initialValue.filter((item) => item.name.includes(value));
-      setIsLoaded(false);
-      setPageContext(result);
+  const { storedValue: numberPage, setStoredValue: setNumberPage } = useStorage(
+    'page',
+    null
+  );
+
+  const Filtered = useCallback(
+    (value: string) => {
+      if (!data?.results) return;
+      const filtered = data.results.filter((item: PokemonList) =>
+        item.name.includes(value)
+      );
+      setStoredSearchValue(value);
+      return filtered;
+    },
+    [data, setStoredSearchValue]
+  );
+
+  const pageContext = useMemo(() => {
+    if (!data?.results) return null;
+    if (storedSearchValue) {
+      const result = Filtered(storedSearchValue);
+      return result;
     }
-  };
+    return data.results;
+  }, [data, storedSearchValue]);
 
   return (
     <PageContext.Provider
       value={{
-        isLoaded,
+        isLoaded: isFetching,
         pageContext,
-        setPageContext,
         Filtered,
         numberPage,
         setNumberPage,
+        refetch,
+        storedSearchValue,
+        setStoredSearchValue,
       }}
     >
       {children}

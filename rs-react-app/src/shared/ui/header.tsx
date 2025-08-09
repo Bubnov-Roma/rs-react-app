@@ -1,7 +1,6 @@
-import { Link, useNavigate } from 'react-router-dom';
-import { ThemeToggle } from './theme-toggle';
 import { useContext } from 'react';
-import { PageContext } from '../context';
+import { Link, useNavigate } from 'react-router-dom';
+import { ThemeToggle, RefetchButton, PageContext } from '@/shared';
 import style from './style.module.css';
 
 export const Header = () => {
@@ -32,6 +31,7 @@ export const Header = () => {
             About
           </button>
         </nav>
+        <RefetchButton />
         <ThemeToggle />
       </div>
     </header>

@@ -1,34 +1,27 @@
-import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Card } from './card';
-import { getOnePokemon } from '../../api';
-import { LoadingComponent } from '@/shared/index';
+import { LoadingComponent } from '@/shared';
+import { useEffect } from 'react';
+import { useGetPokemonByNameQuery } from '@/features/pokemon-api/pokemon-api';
 
 export const ProductDetail = () => {
   const { pokemonName } = useParams();
   const navigateTo = useNavigate();
-  const [item, setItem] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
+
+  const { data, isLoading, isError } = useGetPokemonByNameQuery(
+    pokemonName ?? '',
+    {
+      skip: !pokemonName,
+    }
+  );
 
   useEffect(() => {
-    if (!pokemonName) {
-      void navigateTo('/404');
-      setIsLoading(false);
-      return;
+    if (!pokemonName || isError) {
+      navigateTo('/404');
     }
-    const receiveData = async (): Promise<void> => {
-      setIsLoading(true);
-      setItem(null);
-      const productData = await getOnePokemon(pokemonName);
-      if (productData) {
-        setItem(productData);
-      } else {
-        void navigateTo('/404');
-      }
-      setIsLoading(false);
-    };
-    void receiveData();
-  }, [pokemonName, navigateTo]);
+  }, [isError, navigateTo, pokemonName]);
 
-  return <>{isLoading ? <LoadingComponent /> : <Card {...item} />}</>;
+  if (isLoading) return <LoadingComponent />;
+  if (!data) return null;
+  return <Card {...data} />;
 };
