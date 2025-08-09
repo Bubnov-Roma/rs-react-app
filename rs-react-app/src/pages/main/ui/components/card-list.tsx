@@ -73,7 +73,6 @@ export const CardList = ({
         {currentItems.map((item) => {
           const isLoading = selected[item.name]?.loading ?? false;
           const isError = Boolean(selected[item.name]?.error);
-
           return (
             <div key={item.name} className={style.card_item}>
               <input

@@ -1,4 +1,4 @@
-import { PageContext, PaginationProps, useStorage } from '@/shared';
+import { PageContext, PaginationProps } from '@/shared';
 import { ChangeEvent, useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import style from './style.module.css';
@@ -12,13 +12,8 @@ export const Pagination = ({
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
   const { numberPage, setNumberPage } = useContext(PageContext);
-  const { storedValue, setStoredValue } = useStorage('page', null);
   const [inputValue, setInputValue] = useState('');
   const [error, setError] = useState('');
-
-  useEffect(() => {
-    if (storedValue) setNumberPage(Number(storedValue));
-  }, [setNumberPage, storedValue]);
 
   useEffect(() => {
     if (numberPage) setCurrentPage(numberPage);
@@ -34,7 +29,6 @@ export const Pagination = ({
       navigate(`?page=${page}`, { replace: true });
       onPageChange(page);
       setNumberPage(page);
-      setStoredValue(`${page}`);
     }
   };
 

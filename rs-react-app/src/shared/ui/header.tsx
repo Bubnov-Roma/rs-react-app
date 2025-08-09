@@ -3,6 +3,7 @@ import { ThemeToggle } from './theme-toggle';
 import { useContext } from 'react';
 import { PageContext } from '../context';
 import style from './style.module.css';
+import { RefetchButton } from './refetch-button';
 
 export const Header = () => {
   const navigate = useNavigate();
@@ -32,6 +33,7 @@ export const Header = () => {
             About
           </button>
         </nav>
+        <RefetchButton />
         <ThemeToggle />
       </div>
     </header>

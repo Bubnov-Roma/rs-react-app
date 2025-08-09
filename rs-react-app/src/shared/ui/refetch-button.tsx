@@ -6,7 +6,7 @@ export const RefetchButton = () => {
 
   return (
     <button onClick={() => refetch()} disabled={isLoaded}>
-      🔁 Refresh button
+      Refresh
     </button>
   );
 };

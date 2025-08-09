@@ -63,12 +63,6 @@ export interface CardListType {
 export interface ErrorComponentProps {
   readonly message: string;
 }
-
-export interface SearchInputType {
-  readonly setStateIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
-  readonly stateIsLoading: boolean;
-}
-
 export interface ErrorButtonType {
   readonly onError: (generateError: Error) => void;
 }
@@ -95,11 +89,12 @@ export interface AppContextProviderProps {
 export interface PageContextType {
   readonly isLoaded: boolean;
   readonly pageContext: PokemonList[];
-  readonly setPageContext: React.Dispatch<React.SetStateAction<PokemonList[]>>;
   readonly Filtered: (value: string) => void;
   readonly numberPage: number;
   readonly setNumberPage: (page: number | null) => void;
   readonly refetch: () => void;
+  readonly storedSearchValue: string;
+  readonly setStoredSearchValue: (value: string | null) => void;
 }
 
 export interface UseLocalStorageType<T> {

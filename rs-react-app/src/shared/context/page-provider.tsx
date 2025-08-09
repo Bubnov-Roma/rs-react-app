@@ -1,52 +1,82 @@
 import { useCallback, useEffect, useState } from 'react';
-import { AppContextProviderProps, PokemonList } from '../interfaces';
-import { PageContext } from './contexts';
-import { useStorage } from '../hooks/use-storage';
-import { useGetAllPokemonQuery } from '@/features';
+import {
+  useStorage,
+  PageContext,
+  AppContextProviderProps,
+  PokemonList,
+} from '@/shared';
+import { useLazyGetAllPokemonQuery } from '@/features';
 
 export const PageContextProvider = ({ children }: AppContextProviderProps) => {
-  const { data, isLoading, refetch } = useGetAllPokemonQuery(undefined);
-
+  const [trigger] = useLazyGetAllPokemonQuery();
   const [pageContext, setPageContext] = useState<PokemonList[]>(null);
-  const [initialData, setInitialData] = useState(null);
-  const [numberPage, setNumberPage] = useState<number>(null);
+  const [initialData, setInitialData] = useState<PokemonList[] | null>(null);
+  const [isFetching, setIsFetching] = useState(false);
+  const [hasFetched, setHasFetched] = useState(false);
 
-  const { storedValue } = useStorage('storageValue', '');
+  const {
+    storedValue: storedSearchValue,
+    setStoredValue: setStoredSearchValue,
+  } = useStorage('storageValue', '');
+
+  const { storedValue: numberPage, setStoredValue: setNumberPage } = useStorage(
+    'page',
+    null
+  );
+
+  const filterByName = useCallback((list: PokemonList[], name: string) => {
+    return list.filter((item) => item.name.includes(name));
+  }, []);
 
   const Filtered = useCallback(
     (value: string) => {
       if (initialData) {
-        const result = initialData.filter((item: PokemonList) =>
-          item.name.includes(value)
-        );
-        setPageContext(result);
+        const filtered = filterByName(initialData, value);
+        setPageContext(filtered);
       }
     },
-    [initialData]
+    [initialData, filterByName]
   );
 
-  useEffect(() => {
-    if (data?.results) {
-      const allPokemon = data.results;
-      setInitialData(allPokemon);
-      if (storedValue) {
-        Filtered(storedValue);
-      } else {
-        setPageContext(allPokemon);
+  const fetchData = useCallback(async () => {
+    try {
+      setIsFetching(true);
+      const result = await trigger(undefined).unwrap();
+
+      if (result?.results) {
+        setInitialData(result.results);
+        if (storedSearchValue) {
+          const filtered = filterByName(result.results, storedSearchValue);
+          setPageContext(filtered);
+        } else {
+          setPageContext(result.results);
+        }
       }
+    } catch (error) {
+      console.error('Fetch error:', error);
+    } finally {
+      setIsFetching(false);
     }
-  }, [Filtered, data, storedValue]);
+  }, [trigger, storedSearchValue, filterByName]);
+
+  useEffect(() => {
+    if (!hasFetched) {
+      fetchData();
+      setHasFetched(true);
+    }
+  }, [hasFetched, fetchData]);
 
   return (
     <PageContext.Provider
       value={{
-        isLoaded: isLoading,
+        isLoaded: isFetching,
         pageContext,
-        setPageContext,
         Filtered,
         numberPage,
         setNumberPage,
-        refetch,
+        refetch: fetchData,
+        storedSearchValue,
+        setStoredSearchValue,
       }}
     >
       {children}
