@@ -1,7 +1,10 @@
-import { ReactNode, useEffect } from 'react';
-import { ThemeContext } from './contexts';
-import { Theme } from '../interfaces';
+import { createContext, ReactNode, useEffect } from 'react';
+import { Theme, ThemeContextType } from '../interfaces';
 import { useStorage } from '../hooks';
+
+export const ThemeContext = createContext<ThemeContextType | undefined>(
+  undefined
+);
 
 export const ThemeProvider = ({ children }: { children: ReactNode }) => {
   const { storedValue: storedTheme, setStoredValue: setStoredTheme } =
