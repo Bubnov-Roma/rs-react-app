@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import style from './style.module.css';
 import { PageContext, type PokemonType } from '@/shared';
 import { useContext } from 'react';
+import { RefreshPokemonButton } from './refresh-pokemon-button';
 
 export const Card = (props: PokemonType) => {
   const { name, sprites, types, height, weight, game_indices } = props;
@@ -43,6 +44,7 @@ export const Card = (props: PokemonType) => {
         <button className={style.close_button} onClick={handleClick}>
           Close
         </button>
+        <RefreshPokemonButton name={name} />
       </div>
     </div>
   );

@@ -10,6 +10,7 @@ import {
 } from '@/features/pokemonSelection';
 import { useLazyGetPokemonByNameQuery } from '@/features';
 import { useRef } from 'react';
+import { RefreshAllSelectedButton } from './refresh-all-selected-button';
 
 export const CardList = ({
   data,
@@ -70,6 +71,7 @@ export const CardList = ({
   return (
     <div className={style.wrapper}>
       <div className={style.card_list}>
+        <RefreshAllSelectedButton />
         {currentItems.map((item) => {
           const isLoading = selected[item.name]?.loading ?? false;
           const isError = Boolean(selected[item.name]?.error);

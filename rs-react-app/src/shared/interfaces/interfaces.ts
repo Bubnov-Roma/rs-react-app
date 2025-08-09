@@ -1,9 +1,10 @@
 import { store } from '@/app/store/store';
-import { type ErrorInfo } from 'react';
+import { type ErrorInfo, ReactNode } from 'react';
 
 export interface ErrorBoundaryProps {
-  readonly children: React.ReactNode;
+  readonly children: ReactNode;
   readonly onError?: (error: Error, errorInfo: ErrorInfo) => void;
+  readonly navigate?: (path: string) => void;
 }
 
 export interface ErrorBoundaryState {
