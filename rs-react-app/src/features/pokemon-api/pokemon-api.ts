@@ -8,7 +8,7 @@ export const pokemonApi = createApi({
   endpoints: (builder) => ({
     getAllPokemon: builder.query<FetchType, undefined>({
       query: () => 'pokemon?limit=100000&offset=0',
-      providesTags: ['Pokemon'],
+      providesTags: [{ type: 'Pokemon', id: 'LIST' }],
     }),
     getPokemonByName: builder.query<PokemonType, string>({
       query: (name) => `pokemon/${name}`,

@@ -1,18 +1,14 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useMemo } from 'react';
 import {
-  useStorage,
   PageContext,
   AppContextProviderProps,
   PokemonList,
+  useStorage,
 } from '@/shared';
-import { useLazyGetAllPokemonQuery } from '@/features';
+import { useGetAllPokemonQuery } from '@/features';
 
 export const PageContextProvider = ({ children }: AppContextProviderProps) => {
-  const [trigger] = useLazyGetAllPokemonQuery();
-  const [pageContext, setPageContext] = useState<PokemonList[]>(null);
-  const [initialData, setInitialData] = useState<PokemonList[] | null>(null);
-  const [isFetching, setIsFetching] = useState(false);
-  const [hasFetched, setHasFetched] = useState(false);
+  const { data, refetch, isFetching } = useGetAllPokemonQuery(undefined);
 
   const {
     storedValue: storedSearchValue,
@@ -24,47 +20,26 @@ export const PageContextProvider = ({ children }: AppContextProviderProps) => {
     null
   );
 
-  const filterByName = useCallback((list: PokemonList[], name: string) => {
-    return list.filter((item) => item.name.includes(name));
-  }, []);
-
   const Filtered = useCallback(
     (value: string) => {
-      if (initialData) {
-        const filtered = filterByName(initialData, value);
-        setPageContext(filtered);
-      }
+      if (!data?.results) return;
+      const filtered = data.results.filter((item: PokemonList) =>
+        item.name.includes(value)
+      );
+      setStoredSearchValue(value);
+      return filtered;
     },
-    [initialData, filterByName]
+    [data, setStoredSearchValue]
   );
 
-  const fetchData = useCallback(async () => {
-    try {
-      setIsFetching(true);
-      const result = await trigger(undefined).unwrap();
-
-      if (result?.results) {
-        setInitialData(result.results);
-        if (storedSearchValue) {
-          const filtered = filterByName(result.results, storedSearchValue);
-          setPageContext(filtered);
-        } else {
-          setPageContext(result.results);
-        }
-      }
-    } catch (error) {
-      console.error('Fetch error:', error);
-    } finally {
-      setIsFetching(false);
+  const pageContext = useMemo(() => {
+    if (!data?.results) return null;
+    if (storedSearchValue) {
+      const result = Filtered(storedSearchValue);
+      return result;
     }
-  }, [trigger, storedSearchValue, filterByName]);
-
-  useEffect(() => {
-    if (!hasFetched) {
-      fetchData();
-      setHasFetched(true);
-    }
-  }, [hasFetched, fetchData]);
+    return data.results;
+  }, [data, storedSearchValue]);
 
   return (
     <PageContext.Provider
@@ -74,7 +49,7 @@ export const PageContextProvider = ({ children }: AppContextProviderProps) => {
         Filtered,
         numberPage,
         setNumberPage,
-        refetch: fetchData,
+        refetch,
         storedSearchValue,
         setStoredSearchValue,
       }}
