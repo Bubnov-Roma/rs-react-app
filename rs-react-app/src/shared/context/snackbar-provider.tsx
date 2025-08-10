@@ -1,13 +1,6 @@
-import { createContext, FC, ReactNode, useCallback, useState } from 'react';
+import { FC, ReactNode, useCallback, useState } from 'react';
 import { Snackbar } from '@/shared';
-
-export type SnackbarContextType = {
-  showSnackbar: (message: string, isError?: boolean) => void;
-};
-
-export const SnackbarContext = createContext<SnackbarContextType | undefined>(
-  undefined
-);
+import { SnackbarContext } from './snackbar-context';
 
 export const SnackbarProvider: FC<{ children: ReactNode }> = ({ children }) => {
   const [snackbar, setSnackbar] = useState<{

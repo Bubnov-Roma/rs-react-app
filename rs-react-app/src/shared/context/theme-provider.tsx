@@ -1,9 +1,6 @@
-import { createContext, ReactNode, useEffect } from 'react';
-import { Theme, ThemeContextType, useStorage } from '@/shared';
-
-export const ThemeContext = createContext<ThemeContextType | undefined>(
-  undefined
-);
+import { ReactNode, useEffect } from 'react';
+import { Theme, useStorage } from '@/shared';
+import { ThemeContext } from './theme-context';
 
 export const ThemeProvider = ({ children }: { children: ReactNode }) => {
   const { storedValue: storedTheme, setStoredValue: setStoredTheme } =

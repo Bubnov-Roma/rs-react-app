@@ -1,14 +1,8 @@
-import { createContext, useCallback, useMemo } from 'react';
-import {
-  PageContextProps,
-  PageContextType,
-  PokemonList,
-  useStorage,
-} from '@/shared';
+import { useCallback, useMemo } from 'react';
+import { PageContextProps, PokemonList, useStorage } from '@/shared';
 
 import { useGetAllPokemonQuery } from '@/features';
-
-export const PageContext = createContext<PageContextType>(null);
+import { PageContext } from './page-context';
 
 export const PageContextProvider = ({ children }: PageContextProps) => {
   const { data, refetch, isFetching } = useGetAllPokemonQuery(undefined);
@@ -42,7 +36,7 @@ export const PageContextProvider = ({ children }: PageContextProps) => {
       return result;
     }
     return data.results;
-  }, [data, storedSearchValue]);
+  }, [data, storedSearchValue, Filtered]);
 
   return (
     <PageContext.Provider

@@ -15,7 +15,7 @@ export const RefetchButton = () => {
       dispatch(pokemonApi.util.resetApiState());
       refetch();
       showSnackbar('✅ Cache fully reset and list refetched');
-    } catch (e) {
+    } catch {
       showSnackbar('❌ Failed to refetch list', true);
     } finally {
       setIsRefreshing(false);
