@@ -1,4 +1,4 @@
-import { DataListProps, PokemonList } from '@/shared/index';
+import { DataListProps, PageContext, PokemonList } from '@/shared/index';
 import { Link, Outlet } from 'react-router-dom';
 import style from './style.module.css';
 import { useAppDispatch, useAppSelector } from '@/shared';
@@ -9,8 +9,9 @@ import {
   unselectedPokemon,
 } from '@/features/pokemonSelection';
 import { useLazyGetPokemonByNameQuery } from '@/features';
-import { useRef } from 'react';
-import { RefreshAllSelectedButton } from './refresh-all-selected-button';
+import { useContext, useRef, useState } from 'react';
+import { RefetchButton } from './refetch-button';
+import { Pagination } from './pagination';
 
 export const CardList = ({
   data,
@@ -68,35 +69,49 @@ export const CardList = ({
     }
   };
 
+  const [, setCurrentPage] = useState(1);
+  const { numberPage } = useContext(PageContext);
+
+  const handlePageChange = () => {
+    setCurrentPage(numberPage);
+  };
+
   return (
-    <div className={style.wrapper}>
-      <div className={style.card_list}>
-        <RefreshAllSelectedButton />
-        {currentItems.map((item) => {
-          const isLoading = selected[item.name]?.loading ?? false;
-          const isError = Boolean(selected[item.name]?.error);
-          return (
-            <div key={item.name} className={style.card_item}>
-              <input
-                type="checkbox"
-                checked={isSelected(item.name)}
-                onChange={() => handleToggle(item)}
-                disabled={isLoading}
-              />
-              <Link to={`/page/${currentPage}/${item.name}`}>
-                {item.name.toLocaleUpperCase()}
-              </Link>
-              {isLoading && <span style={{ marginLeft: 8 }}>Loading...</span>}
-              {isError && (
-                <span style={{ color: 'red', marginLeft: 8 }}>
-                  {selected[item.name]?.error}
-                </span>
-              )}
-            </div>
-          );
-        })}
+    <div className={style.card_list_block}>
+      <RefetchButton />
+      <div className={style.wrapper}>
+        <div className={style.card_list}>
+          {currentItems.map((item) => {
+            const isLoading = selected[item.name]?.loading ?? false;
+            const isError = Boolean(selected[item.name]?.error);
+            return (
+              <div key={item.name} className={style.card_item}>
+                <input
+                  type="checkbox"
+                  checked={isSelected(item.name)}
+                  onChange={() => handleToggle(item)}
+                  disabled={isLoading}
+                />
+                <Link to={`/page/${currentPage}/${item.name}`}>
+                  {item.name.toLocaleUpperCase()}
+                </Link>
+                {isLoading && <span style={{ marginLeft: 8 }}>Loading...</span>}
+                {isError && (
+                  <span style={{ color: 'red', marginLeft: 8 }}>
+                    {selected[item.name]?.error}
+                  </span>
+                )}
+              </div>
+            );
+          })}
+          <Pagination
+            totalItems={data.length}
+            itemsPerPage={itemsPerPage}
+            onPageChange={handlePageChange}
+          />
+        </div>
+        <Outlet />
       </div>
-      <Outlet />
     </div>
   );
 };

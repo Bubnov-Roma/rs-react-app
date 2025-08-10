@@ -3,23 +3,22 @@ import { useAppSelector } from '@/shared/hooks/use-app-selector';
 import { clearSelected } from '../model';
 import { saveAs } from 'file-saver';
 import style from './style.module.css';
+import { RefreshAllSelectedButton } from './refresh-all-selected-button';
+import { useMemo } from 'react';
 
 export const SelectionPanel = () => {
   const dispatch = useAppDispatch();
   const selected = useAppSelector((state) => state.pokemonSelection.selected);
 
-  const selectedWithData = Object.values(selected).filter((item) => item.data);
-  if (selectedWithData.length === 0) return null;
+  const selectedWithData = useMemo(
+    () => Object.values(selected).filter((item) => item.data),
+    [selected]
+  );
 
   const handleDownload = () => {
-    const selectedWithData = Object.values(selected).filter(
-      (item) => item.data
-    );
-
     if (selectedWithData.length === 0) return;
 
     const pokemon = selectedWithData.map((item) => item.data);
-
     const headers = Object.keys(pokemon[0]);
     const rows = pokemon.map((p) =>
       headers.map((h) => JSON.stringify(p[h] ?? '')).join(',')
@@ -34,15 +33,25 @@ export const SelectionPanel = () => {
     saveAs(blob, filename);
   };
 
+  const isHidden = selectedWithData.length === 0;
+
   return (
-    <div className={style.selection_panel}>
-      <div style={{ marginTop: '8px' }}>
-        <button onClick={() => dispatch(clearSelected())}>Unselect all</button>
-        <button onClick={handleDownload} style={{ marginLeft: '8px' }}>
-          Download
+    <div className={`${style.selection_panel} ${isHidden ? style.hidden : ''}`}>
+      <div className={style.left}>
+        <strong>{selectedWithData.length}</strong> Pokémon selected
+      </div>
+      <div className={style.right}>
+        <RefreshAllSelectedButton />
+        <button
+          onClick={() => dispatch(clearSelected())}
+          className="secondary-button"
+        >
+          ❌ Unselect
+        </button>
+        <button onClick={handleDownload} className="secondary-button">
+          📥 Download
         </button>
       </div>
-      <strong>{selectedWithData.length}</strong> Pokémon selected
     </div>
   );
 };

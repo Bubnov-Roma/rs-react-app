@@ -7,6 +7,7 @@ import {
   setPokemonLoading,
 } from '@/features';
 import { useState } from 'react';
+import style from './style.module.css';
 
 export const RefreshPokemonButton = ({ name }: { name: string }) => {
   const dispatch = useAppDispatch();
@@ -44,6 +45,7 @@ export const RefreshPokemonButton = ({ name }: { name: string }) => {
       disabled={isRefreshing}
       progress={100}
       showProgress={true}
+      className={`${style.refetch_button}`}
     />
   );
 };

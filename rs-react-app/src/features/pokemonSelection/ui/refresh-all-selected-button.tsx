@@ -11,6 +11,7 @@ import {
   setPokemonLoading,
 } from '@/features/pokemonSelection';
 import { useState } from 'react';
+import style from './style.module.css';
 
 export const RefreshAllSelectedButton = () => {
   const dispatch = useAppDispatch();
@@ -67,10 +68,11 @@ export const RefreshAllSelectedButton = () => {
     <AsyncButton
       onClick={handleRefreshAll}
       isLoading={isRefreshing}
-      label={`🔁 Update all selected`}
+      label={`🔁 Update`}
       disabled={isDisabled || isRefreshing}
       progress={progress}
       showProgress={true}
+      className={`${style.refresh_button}`}
     />
   );
 };

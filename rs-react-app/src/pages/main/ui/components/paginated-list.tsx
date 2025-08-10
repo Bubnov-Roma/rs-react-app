@@ -1,20 +1,15 @@
 import { useContext, useEffect, useState } from 'react';
 import { CardList } from './card-list';
-import { Pagination } from './pagination';
-import { LoadingComponent, PageContext } from '@/shared';
+import { LoadingComponent, PageContext, useAppSelector } from '@/shared';
 import { useNavigate, useParams } from 'react-router-dom';
 import style from './style.module.css';
 import { SelectionPanel } from '@/features';
 
 const ITEMS_PER_PAGE = 5;
 export const PaginatedList = () => {
-  const [, setCurrentPage] = useState(1);
   const navigateTo = useNavigate();
   const { pageContext, numberPage, setNumberPage } = useContext(PageContext);
   const { page } = useParams();
-  const handlePageChange = () => {
-    setCurrentPage(numberPage);
-  };
 
   useEffect(() => {
     if (!page) {
@@ -39,16 +34,13 @@ export const PaginatedList = () => {
         </div>
       ) : (
         <>
-          <CardList
-            data={pageContext}
-            currentPage={numberPage}
-            itemsPerPage={ITEMS_PER_PAGE}
-          />
-          <Pagination
-            totalItems={pageContext.length}
-            itemsPerPage={ITEMS_PER_PAGE}
-            onPageChange={handlePageChange}
-          />
+          <div className={style.content_wrapper}>
+            <CardList
+              data={pageContext}
+              currentPage={numberPage}
+              itemsPerPage={ITEMS_PER_PAGE}
+            />
+          </div>
           <SelectionPanel />
         </>
       )}

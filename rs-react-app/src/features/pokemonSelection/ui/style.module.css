@@ -1,5 +1,79 @@
 .selection_panel {
-  padding: 1rem;
-  margin: 0 auto;
-  text-align: center;
+  width: 100%;
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(87, 87, 87, 0.2);
+  backdrop-filter: blur(6px);
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 16px 24px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  z-index: 9999;
+  min-width: 300px;
+  max-width: 90%;
+  opacity: 1;
+  transition:
+    opacity 0.3s ease,
+    transform 0.3s ease;
+}
+
+.hidden {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(-50%) translateY(20px);
+}
+
+.right {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.left {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.secondary-button {
+  background-color: #f3f4f6;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 6px;
+  color: #111827;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.secondary-button:hover {
+  background-color: #e5e7eb;
+}
+
+.secondary-button:disabled {
+  background-color: #d1d5db;
+  cursor: not-allowed;
+}
+
+.refresh_button {
+  min-width: 6rem;
+}
+
+@media (max-width: 620px) {
+  .selection_panel {
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px;
+  }
+
+  .left {
+    width: 100%;
+    text-align: center;
+  }
 }

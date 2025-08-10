@@ -1,6 +1,5 @@
 import { createContext, ReactNode, useEffect } from 'react';
-import { Theme, ThemeContextType } from '../interfaces';
-import { useStorage } from '../hooks';
+import { Theme, ThemeContextType, useStorage } from '@/shared';
 
 export const ThemeContext = createContext<ThemeContextType | undefined>(
   undefined
