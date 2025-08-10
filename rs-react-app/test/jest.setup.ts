@@ -8,3 +8,9 @@ if (!global.TextEncoder) {
 if (!global.TextDecoder) {
   global.TextDecoder = TextDecoder;
 }
+
+global.fetch = jest.fn(() =>
+  Promise.resolve({
+    json: () => Promise.resolve({}),
+  })
+) as jest.Mock;
