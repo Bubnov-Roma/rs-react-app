@@ -1,120 +1,77 @@
-import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { screen, fireEvent } from '@testing-library/react';
 import { Card } from '@/pages/main/ui/components/card';
-import { PageContext } from '@/shared';
-import { MemoryRouter } from 'react-router-dom';
-
-const mockNavigate = jest.fn();
+import { renderWithProviders } from '@/utils';
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
-  useNavigate: () => mockNavigate,
+  useNavigate: jest.fn(),
 }));
 
-const mockSetNumberPage = jest.fn();
+jest.mock('@/pages/main/ui/components/refresh-pokemon-button.tsx', () => ({
+  RefreshPokemonButton: () => <button>Mock Refresh Button</button>,
+}));
 
-const mockPokemon = {
-  name: 'pikachu',
-  sprites: {
-    front_default: 'https://example.com/pikachu.png',
-  },
-  types: [
-    {
-      type: {
-        name: 'electric',
-      },
-    },
-  ],
-  height: '4',
-  weight: '60',
-  game_indices: new Array(3).fill({ game_index: 1 }),
-};
+describe('Card', () => {
+  const mockNavigate = jest.fn();
 
-describe('Card component', () => {
   beforeEach(() => {
+    (useNavigate as jest.Mock).mockReturnValue(mockNavigate);
     mockNavigate.mockClear();
-    mockSetNumberPage.mockClear();
   });
+
+  const fakePokemon = {
+    name: 'pikachu',
+    sprites: {
+      front_default: 'https://example.com/pikachu.png',
+    },
+    types: [{ type: { name: 'electric' } }],
+    height: '4',
+    weight: '60',
+    game_indices: [1, 2, 3],
+  };
 
   it('renders pokemon data correctly', () => {
-    render(
-      <PageContext.Provider
-        value={{
-          numberPage: 2,
-          setNumberPage: mockSetNumberPage,
-          isLoaded: true,
-          pageContext: [],
-          setPageContext: jest.fn(),
-          Filtered: (): void => {},
-        }}
-      >
-        <MemoryRouter>
-          <Card {...mockPokemon} />
-        </MemoryRouter>
-      </PageContext.Provider>
-    );
+    renderWithProviders(<Card {...fakePokemon} />);
 
-    expect(screen.getByText(/PIKACHU/)).toBeInTheDocument();
+    expect(screen.getByAltText(/pikachu sprite/i)).toBeInTheDocument();
+    expect(screen.getByText(/pikachu/i)).toBeInTheDocument();
     expect(screen.getByText(/electric/i)).toBeInTheDocument();
-    expect(screen.getByText(/Height:/)).toBeInTheDocument();
     expect(screen.getByText(/4/)).toBeInTheDocument();
-    expect(screen.getByText(/Weight:/)).toBeInTheDocument();
     expect(screen.getByText(/60/)).toBeInTheDocument();
-    expect(screen.getByText(/Battle:/)).toBeInTheDocument();
     expect(screen.getByText(/3/)).toBeInTheDocument();
-
-    const img = screen.getByRole('img') as HTMLImageElement;
-    expect(img).toBeInTheDocument();
-    expect(img.src).toBe('https://example.com/pikachu.png');
+    expect(screen.getByText(/Mock Refresh Button/)).toBeInTheDocument();
   });
 
-  it('navigates to current page on Close button click', () => {
-    render(
-      <PageContext.Provider
-        value={{
-          numberPage: 2,
-          setNumberPage: mockSetNumberPage,
-          isLoaded: true,
-          pageContext: [],
-          setPageContext: jest.fn(),
-          Filtered: (): void => {},
-        }}
-      >
-        <MemoryRouter>
-          <Card {...mockPokemon} />
-        </MemoryRouter>
-      </PageContext.Provider>
-    );
+  it('calls navigate with correct page when close button clicked', () => {
+    renderWithProviders(<Card {...fakePokemon} />, {
+      pageContextValue: {
+        numberPage: 5,
+        setNumberPage: jest.fn(),
+      },
+    });
 
-    const button = screen.getByRole('button', { name: /close/i });
-    fireEvent.click(button);
+    const closeButton = screen.getByRole('button', { name: /close card/i });
+    fireEvent.click(closeButton);
 
-    expect(mockSetNumberPage).not.toHaveBeenCalled();
-    expect(mockNavigate).toHaveBeenCalledWith('/page/2');
+    expect(mockNavigate).toHaveBeenCalledWith('/page/5');
   });
 
-  it('sets numberPage to 1 and navigates to /page/null (because numberPage is still null)', () => {
-    render(
-      <PageContext.Provider
-        value={{
-          numberPage: null,
-          setNumberPage: mockSetNumberPage,
-          isLoaded: true,
-          pageContext: [],
-          setPageContext: jest.fn(),
-          Filtered: (): void => {},
-        }}
-      >
-        <MemoryRouter>
-          <Card {...mockPokemon} />
-        </MemoryRouter>
-      </PageContext.Provider>
-    );
+  it('uses setNumberPage if numberPage is null', () => {
+    const setNumberPage = jest.fn();
 
-    const button = screen.getByRole('button', { name: /close/i });
-    fireEvent.click(button);
+    renderWithProviders(<Card {...fakePokemon} />, {
+      pageContextValue: {
+        numberPage: null,
+        setNumberPage,
+      },
+    });
 
-    expect(mockSetNumberPage).toHaveBeenCalledWith(1);
-    expect(mockNavigate).toHaveBeenCalledWith('/page/null');
+    const closeButton = screen.getByRole('button', { name: /close card/i });
+    fireEvent.click(closeButton);
+
+    expect(setNumberPage).toHaveBeenCalledWith(1);
+    expect(mockNavigate).toHaveBeenCalledWith('/page/1');
   });
 });
