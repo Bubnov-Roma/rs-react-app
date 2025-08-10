@@ -12,11 +12,9 @@ export const RefetchButton = () => {
   const handleInvalidate = async () => {
     setIsRefreshing(true);
     try {
-      dispatch(
-        pokemonApi.util.invalidateTags([{ type: 'Pokemon', id: 'LIST' }])
-      );
+      dispatch(pokemonApi.util.resetApiState());
       refetch();
-      showSnackbar('✅ List refetched successfully');
+      showSnackbar('✅ Cache fully reset and list refetched');
     } catch (e) {
       showSnackbar('❌ Failed to refetch list', true);
     } finally {

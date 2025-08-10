@@ -1,34 +1,21 @@
 import { useNavigate } from 'react-router-dom';
 import style from './style.module.css';
 import { PageContext, type PokemonType } from '@/shared';
-import { useContext, useState } from 'react';
+import { useContext } from 'react';
 import { RefreshPokemonButton } from './refresh-pokemon-button';
 
 export const Card = (props: PokemonType & { onClose?: () => void }) => {
   const { name, sprites, types, height, weight, game_indices, onClose } = props;
   const { numberPage, setNumberPage } = useContext(PageContext);
   const navigate = useNavigate();
-  const [isExiting, setIsExiting] = useState(false);
-
-  const handleClose = () => {
-    setIsExiting(true);
-  };
-
-  const handleAnimationEnd = () => {
-    if (isExiting && onClose) onClose();
-  };
 
   const handleClick = () => {
     if (!numberPage) setNumberPage(1);
     navigate(`/page/${numberPage}`);
-    setIsExiting(true);
   };
 
   return (
-    <div
-      className={`${style.card} ${isExiting ? style.exit : ''}`}
-      onAnimationEnd={handleAnimationEnd}
-    >
+    <div className={style.card}>
       <button
         className={style.close_button}
         onClick={handleClick}
