@@ -84,7 +84,7 @@ export interface PaginationProps {
   readonly onPageChange: (page: number) => void;
 }
 
-export interface AppContextProviderProps {
+export interface PageContextProps {
   readonly children: React.ReactElement;
 }
 export interface PageContextType {

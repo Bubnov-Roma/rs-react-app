@@ -1,11 +1,12 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect } from 'react';
 import { CardList } from './card-list';
-import { LoadingComponent, PageContext, useAppSelector } from '@/shared';
+import { LoadingComponent, PageContext } from '@/shared';
 import { useNavigate, useParams } from 'react-router-dom';
 import style from './style.module.css';
 import { SelectionPanel } from '@/features';
 
 const ITEMS_PER_PAGE = 5;
+
 export const PaginatedList = () => {
   const navigateTo = useNavigate();
   const { pageContext, numberPage, setNumberPage } = useContext(PageContext);

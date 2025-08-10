@@ -5,11 +5,7 @@ import {
   useSnackbar,
 } from '@/shared';
 import { useLazyGetPokemonByNameQuery, pokemonApi } from '@/features';
-import {
-  addPokemon,
-  setPokemonError,
-  setPokemonLoading,
-} from '@/features/pokemonSelection';
+import { addPokemon, setPokemonError, setPokemonLoading } from '@/features';
 import { useState } from 'react';
 import style from './style.module.css';
 

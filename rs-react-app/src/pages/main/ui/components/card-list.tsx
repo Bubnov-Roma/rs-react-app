@@ -1,14 +1,19 @@
-import { DataListProps, PageContext, PokemonList } from '@/shared/index';
 import { Link, Outlet } from 'react-router-dom';
 import style from './style.module.css';
-import { useAppDispatch, useAppSelector } from '@/shared';
+import {
+  useAppDispatch,
+  useAppSelector,
+  DataListProps,
+  PageContext,
+  PokemonList,
+} from '@/shared';
 import {
   addPokemon,
   setPokemonError,
   setPokemonLoading,
   unselectedPokemon,
-} from '@/features/pokemonSelection';
-import { useLazyGetPokemonByNameQuery } from '@/features';
+  useLazyGetPokemonByNameQuery,
+} from '@/features';
 import { useContext, useRef, useState } from 'react';
 import { RefetchButton } from './refetch-button';
 import { Pagination } from './pagination';

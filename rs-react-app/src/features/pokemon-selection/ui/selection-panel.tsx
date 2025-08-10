@@ -1,5 +1,4 @@
-import { useAppDispatch } from '@/shared/hooks/use-app-dispatch';
-import { useAppSelector } from '@/shared/hooks/use-app-selector';
+import { useAppDispatch, useAppSelector } from '@/shared';
 import { clearSelected } from '../model';
 import { saveAs } from 'file-saver';
 import style from './style.module.css';

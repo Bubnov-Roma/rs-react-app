@@ -4,14 +4,15 @@ import { PageContext, type PokemonType } from '@/shared';
 import { useContext } from 'react';
 import { RefreshPokemonButton } from './refresh-pokemon-button';
 
-export const Card = (props: PokemonType & { onClose?: () => void }) => {
-  const { name, sprites, types, height, weight, game_indices, onClose } = props;
+export const Card = (props: PokemonType) => {
+  const { name, sprites, types, height, weight, game_indices } = props;
   const { numberPage, setNumberPage } = useContext(PageContext);
   const navigate = useNavigate();
 
   const handleClick = () => {
-    if (!numberPage) setNumberPage(1);
-    navigate(`/page/${numberPage}`);
+    const page = numberPage ?? 1;
+    if (!numberPage) setNumberPage(page);
+    navigate(`/page/${page}`);
   };
 
   return (

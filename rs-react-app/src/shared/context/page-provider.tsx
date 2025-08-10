@@ -1,15 +1,16 @@
 import { createContext, useCallback, useMemo } from 'react';
 import {
-  AppContextProviderProps,
+  PageContextProps,
   PageContextType,
   PokemonList,
   useStorage,
 } from '@/shared';
+
 import { useGetAllPokemonQuery } from '@/features';
 
 export const PageContext = createContext<PageContextType>(null);
 
-export const PageContextProvider = ({ children }: AppContextProviderProps) => {
+export const PageContextProvider = ({ children }: PageContextProps) => {
   const { data, refetch, isFetching } = useGetAllPokemonQuery(undefined);
 
   const {
