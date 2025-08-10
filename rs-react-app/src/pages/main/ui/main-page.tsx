@@ -1,19 +1,15 @@
-import { useState } from 'react';
-import { ErrorBoundaryNavigate, LoadingComponent } from '@/shared';
+import { ErrorBoundaryNavigate, LoadingComponent, PageContext } from '@/shared';
 import { Outlet } from 'react-router-dom';
 import { SearchInput } from './components';
+import { useContext } from 'react';
 
 export function MainPage() {
-  const [stateIsLoading, setStateIsLoading] = useState(false);
-
+  const { isLoaded } = useContext(PageContext);
   return (
     <>
-      <SearchInput
-        setStateIsLoading={setStateIsLoading}
-        stateIsLoading={stateIsLoading}
-      />
+      <SearchInput />
       <ErrorBoundaryNavigate>
-        {stateIsLoading ? <LoadingComponent /> : <Outlet />}
+        {isLoaded ? <LoadingComponent /> : <Outlet />}
       </ErrorBoundaryNavigate>
     </>
   );

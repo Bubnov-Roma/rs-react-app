@@ -1,18 +1,18 @@
-import { PageContext, useStorage, type SearchInputType } from '@/shared';
+import { PageContext } from '@/shared';
 import { useContext, useState, type ChangeEvent } from 'react';
 import style from './style.module.css';
 import { useNavigate } from 'react-router-dom';
 
-export const SearchInput = (props: SearchInputType) => {
-  const { setStateIsLoading } = props;
-  const { storedValue: searchValue, setStoredValue: setSearchValue } =
-    useStorage('storageValue', '');
-  const { storedValue: storedPage, setStoredValue: setStoredPage } = useStorage(
-    'page',
-    null
-  );
-  const [value, setValue] = useState(searchValue);
-  const { Filtered, setNumberPage } = useContext(PageContext);
+export const SearchInput = () => {
+  const {
+    Filtered,
+    numberPage,
+    setNumberPage,
+    storedSearchValue,
+    setStoredSearchValue,
+  } = useContext(PageContext);
+
+  const [value, setValue] = useState(storedSearchValue);
   const navigate = useNavigate();
 
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>): void => {
@@ -20,14 +20,11 @@ export const SearchInput = (props: SearchInputType) => {
   };
 
   const handleSubmit = (event: { preventDefault: () => void }): void => {
-    setStateIsLoading(true);
     event.preventDefault();
-    setSearchValue(value);
+    setStoredSearchValue(value);
     Filtered(value);
     setNumberPage(1);
-    setStoredPage(1);
-    setStateIsLoading(false);
-    navigate(`/page/${storedPage}`, { replace: true });
+    navigate(`/page/${numberPage}`, { replace: true });
   };
 
   return (

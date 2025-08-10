@@ -27,8 +27,10 @@ describe('NotFoundPage', () => {
           setNumberPage: mockSetNumberPage,
           isLoaded: true,
           pageContext: [],
-          setPageContext: jest.fn(),
           Filtered: jest.fn(),
+          refetch: jest.fn(),
+          storedSearchValue: '',
+          setStoredSearchValue: jest.fn(),
         }}
       >
         <NotFoundPage />

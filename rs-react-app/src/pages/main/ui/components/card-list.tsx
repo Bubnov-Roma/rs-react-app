@@ -1,9 +1,23 @@
-import { DataListProps, PokemonList } from '@/shared/index';
 import { Link, Outlet } from 'react-router-dom';
 import style from './style.module.css';
-import { useAppDispatch } from '@/shared/hooks/use-app-dispatch';
-import { useAppSelector } from '@/shared/hooks/use-app-selector';
-import { fetchPokemon, unselectedPokemon } from '@/features';
+import {
+  useAppDispatch,
+  useAppSelector,
+  DataListProps,
+  PageContext,
+  PokemonList,
+} from '@/shared';
+import {
+  addPokemon,
+  setPokemonError,
+  setPokemonLoading,
+  unselectedPokemon,
+  useLazyGetPokemonByNameQuery,
+} from '@/features';
+import { useContext, useRef, useState } from 'react';
+import { RefetchButton } from './refetch-button';
+import { Pagination } from './pagination';
+
 export const CardList = ({
   data,
   currentPage,
@@ -12,41 +26,97 @@ export const CardList = ({
   const dispatch = useAppDispatch();
   const selected = useAppSelector((state) => state.pokemonSelection.selected);
 
+  const [loadPokemon] = useLazyGetPokemonByNameQuery();
+
+  const lastUnsubscribeRef = useRef<(() => void) | undefined>(undefined);
+
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   const currentItems = data.slice(startIndex, endIndex);
 
   const isSelected = (name: string) => Boolean(selected[name]);
 
-  const handleToggle = (pokemon: PokemonList) => {
-    if (isSelected(pokemon.name)) {
-      dispatch(unselectedPokemon(pokemon.name));
+  const handleToggle = async (pokemon: PokemonList) => {
+    const name = pokemon.name;
+
+    if (isSelected(name)) {
+      if (lastUnsubscribeRef.current) {
+        lastUnsubscribeRef.current();
+        lastUnsubscribeRef.current = undefined;
+      }
+      dispatch(unselectedPokemon(name));
     } else {
-      dispatch(fetchPokemon(pokemon));
+      if (lastUnsubscribeRef.current) {
+        lastUnsubscribeRef.current();
+        lastUnsubscribeRef.current = undefined;
+      }
+
+      dispatch(setPokemonLoading({ name, loading: true }));
+      const resultPromise = loadPokemon(name);
+
+      if (resultPromise.unsubscribe) {
+        lastUnsubscribeRef.current = resultPromise.unsubscribe;
+      }
+
+      try {
+        const result = await resultPromise.unwrap();
+        dispatch(addPokemon(result));
+      } catch (error) {
+        dispatch(
+          setPokemonError({
+            name,
+            error: error?.data?.message || 'Error loading pokemon',
+          })
+        );
+      } finally {
+        lastUnsubscribeRef.current = null;
+      }
     }
   };
 
+  const [, setCurrentPage] = useState(1);
+  const { numberPage } = useContext(PageContext);
+
+  const handlePageChange = () => {
+    setCurrentPage(numberPage);
+  };
+
   return (
-    <div className={style.wrapper}>
-      <div className={style.card_list}>
-        {currentItems.map((item) => (
-          <div key={item.name} className={style.card_item}>
-            <input
-              type="checkbox"
-              checked={isSelected(item.name)}
-              onChange={() => handleToggle(item)}
-            />
-            <Link to={`/page/${currentPage}/${item.name}`}>
-              {item.name.toLocaleUpperCase()}
-            </Link>
-            {selected[item.name]?.loading && <span>Loading...</span>}
-            {selected[item.name]?.error && (
-              <span style={{ color: 'red' }}>{selected[item.name].error}</span>
-            )}
-          </div>
-        ))}
+    <div className={style.card_list_block}>
+      <RefetchButton />
+      <div className={style.wrapper}>
+        <div className={style.card_list}>
+          {currentItems.map((item) => {
+            const isLoading = selected[item.name]?.loading ?? false;
+            const isError = Boolean(selected[item.name]?.error);
+            return (
+              <div key={item.name} className={style.card_item}>
+                <input
+                  type="checkbox"
+                  checked={isSelected(item.name)}
+                  onChange={() => handleToggle(item)}
+                  disabled={isLoading}
+                />
+                <Link to={`/page/${currentPage}/${item.name}`}>
+                  {item.name.toLocaleUpperCase()}
+                </Link>
+                {isLoading && <span style={{ marginLeft: 8 }}>Loading...</span>}
+                {isError && (
+                  <span style={{ color: 'red', marginLeft: 8 }}>
+                    {selected[item.name]?.error}
+                  </span>
+                )}
+              </div>
+            );
+          })}
+          <Pagination
+            totalItems={data.length}
+            itemsPerPage={itemsPerPage}
+            onPageChange={handlePageChange}
+          />
+        </div>
+        <Outlet />
       </div>
-      <Outlet />
     </div>
   );
 };

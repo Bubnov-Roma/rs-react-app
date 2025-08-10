@@ -1,109 +1,178 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
-import { SearchInput } from '@/pages/main/ui/components';
-import { PageContext } from '@/shared';
-import { MemoryRouter } from 'react-router-dom';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { RefreshAllSelectedButton } from '@/features/pokemon-selection/ui/refresh-all-selected-button';
+import { useAppDispatch, useAppSelector, useSnackbar } from '@/shared/hooks';
+import {
+  useLazyGetPokemonByNameQuery,
+  pokemonApi,
+  addPokemon,
+  setPokemonLoading,
+  setPokemonError,
+} from '@/features';
+import { PokemonType } from '@/shared';
 
-const mockNavigate = jest.fn();
+jest.mock('@/shared/hooks/use-app-dispatch', () => ({
+  useAppDispatch: jest.fn(),
+}));
 
-jest.mock('react-router-dom', () => {
-  const original = jest.requireActual('react-router-dom');
-  return {
-    ...original,
-    useNavigate: () => mockNavigate,
-  };
-});
+jest.mock('@/shared/hooks/use-app-selector', () => ({
+  useAppSelector: jest.fn(),
+}));
 
-const mockSetSearchValue = jest.fn();
-const mockSetStoredPage = jest.fn();
+jest.mock('@/shared/hooks/use-snackbar', () => ({
+  useSnackbar: jest.fn(),
+}));
 
-jest.mock('@/shared', () => {
-  const original = jest.requireActual('@/shared');
-  return {
-    ...original,
-    useStorage: (key: string) => {
-      if (key === 'storageValue') {
-        return {
-          storedValue: '',
-          setStoredValue: mockSetSearchValue,
-        };
-      }
-      if (key === 'page') {
-        return {
-          storedValue: 1,
-          setStoredValue: mockSetStoredPage,
-        };
-      }
-      return {
-        storedValue: null,
-        setStoredValue: jest.fn(),
-      };
+jest.mock('@/features', () => ({
+  __esModule: true,
+  ...jest.requireActual('@/features'),
+  useLazyGetPokemonByNameQuery: jest.fn(),
+  addPokemon: jest.fn(),
+  setPokemonLoading: jest.fn(),
+  setPokemonError: jest.fn(),
+  pokemonApi: {
+    util: {
+      invalidateTags: jest.fn(),
     },
-  };
-});
+  },
+}));
 
-describe('SearchInput', () => {
-  const mockSetStateIsLoading = jest.fn();
-  const mockFiltered = jest.fn();
-  const mockSetNumberPage = jest.fn();
+const mockPokemon: PokemonType = {
+  name: 'pikachu',
+  height: '4',
+  weight: '60',
+  sprites: { front_default: 'pikachu.png' },
+  types: [{ type: { name: 'electric' } }],
+  game_indices: [],
+};
 
-  const renderWithContext = () => {
-    return render(
-      <PageContext.Provider
-        value={{
-          Filtered: mockFiltered,
-          numberPage: 1,
-          setNumberPage: mockSetNumberPage,
-          pageContext: [],
-          isLoaded: true,
-          setPageContext: jest.fn(),
-        }}
-      >
-        <MemoryRouter>
-          <SearchInput
-            setStateIsLoading={mockSetStateIsLoading}
-            stateIsLoading={false}
-          />
-        </MemoryRouter>
-      </PageContext.Provider>
-    );
-  };
+describe('RefreshAllSelectedButton', () => {
+  const mockDispatch = jest.fn();
+  const mockShowSnackbar = jest.fn();
+  const mockLoadPokemon = jest.fn();
 
   beforeEach(() => {
     jest.clearAllMocks();
+
+    (useAppDispatch as jest.Mock).mockReturnValue(mockDispatch);
+    (useSnackbar as jest.Mock).mockReturnValue({
+      showSnackbar: mockShowSnackbar,
+    });
+    (useLazyGetPokemonByNameQuery as jest.Mock).mockReturnValue([
+      mockLoadPokemon,
+    ]);
   });
 
-  it('renders input and button', () => {
-    renderWithContext();
+  it('should disable the button when no pokémon are selected', () => {
+    (useAppSelector as jest.Mock).mockImplementation((selector) =>
+      selector({ pokemonSelection: { selected: {} } })
+    );
 
-    expect(
-      screen.getByPlaceholderText(/Enter Name Pokemon/i)
-    ).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /Search/i })).toBeInTheDocument();
+    render(<RefreshAllSelectedButton />);
+    const button = screen.getByRole('button', { name: /update/i });
+
+    expect(button).toBeDisabled();
   });
 
-  it('handles input change', () => {
-    renderWithContext();
-    const input = screen.getByPlaceholderText(/Enter Name Pokemon/i);
+  it('should handle successful refresh of all selected pokémon', async () => {
+    (useAppSelector as jest.Mock).mockImplementation((selector) =>
+      selector({
+        pokemonSelection: {
+          selected: {
+            pikachu: { loading: false, data: mockPokemon },
+          },
+        },
+      })
+    );
 
-    fireEvent.change(input, { target: { value: 'bulbasaur' } });
+    mockLoadPokemon.mockReturnValue({
+      unwrap: jest.fn().mockResolvedValue(mockPokemon),
+    });
 
-    expect((input as HTMLInputElement).value).toBe('bulbasaur');
-  });
+    (addPokemon as unknown as jest.Mock).mockReturnValue({
+      type: 'pokemon/addPokemon',
+      payload: mockPokemon,
+    });
 
-  it('submits the form and calls handlers', () => {
-    renderWithContext();
-    const input = screen.getByPlaceholderText(/Enter Name Pokemon/i);
-    const button = screen.getByRole('button', { name: /Search/i });
+    (setPokemonLoading as unknown as jest.Mock).mockReturnValue({
+      type: 'pokemon/setPokemonLoading',
+      payload: { name: 'pikachu', loading: true },
+    });
 
-    fireEvent.change(input, { target: { value: 'pikachu' } });
+    render(<RefreshAllSelectedButton />);
+
+    const button = screen.getByRole('button', { name: /update/i });
     fireEvent.click(button);
 
-    expect(mockSetStateIsLoading).toHaveBeenCalledTimes(2);
-    expect(mockSetSearchValue).toHaveBeenCalledWith('pikachu');
-    expect(mockFiltered).toHaveBeenCalledWith('pikachu');
-    expect(mockSetNumberPage).toHaveBeenCalledWith(1);
-    expect(mockSetStoredPage).toHaveBeenCalledWith(1);
-    expect(mockNavigate).toHaveBeenCalledWith('/page/1', { replace: true });
+    await waitFor(() => {
+      expect(mockDispatch).toHaveBeenCalledWith(
+        pokemonApi.util.invalidateTags([{ type: 'Pokemon', id: 'pikachu' }])
+      );
+      expect(mockDispatch).toHaveBeenCalledWith({
+        type: 'pokemon/setPokemonLoading',
+        payload: { name: 'pikachu', loading: true },
+      });
+      expect(mockDispatch).toHaveBeenCalledWith({
+        type: 'pokemon/addPokemon',
+        payload: mockPokemon,
+      });
+
+      expect(mockShowSnackbar).toHaveBeenCalledWith(
+        '✅ Updated: pikachu',
+        false
+      );
+    });
+  });
+
+  it('should handle errors when refreshing pokémon', async () => {
+    (useAppSelector as jest.Mock).mockImplementation((selector) =>
+      selector({
+        pokemonSelection: {
+          selected: {
+            pikachu: { loading: false, data: mockPokemon },
+          },
+        },
+      })
+    );
+
+    mockLoadPokemon.mockReturnValue({
+      unwrap: jest
+        .fn()
+        .mockRejectedValue({ data: { message: 'Network error' } }),
+    });
+
+    (setPokemonLoading as unknown as jest.Mock).mockReturnValue({
+      type: 'pokemon/setPokemonLoading',
+      payload: { name: 'pikachu', loading: true },
+    });
+
+    (setPokemonError as unknown as jest.Mock).mockReturnValue({
+      type: 'pokemon/setPokemonError',
+      payload: { name: 'pikachu', error: 'Network error' },
+    });
+
+    render(<RefreshAllSelectedButton />);
+
+    const button = screen.getByRole('button', { name: /update/i });
+    fireEvent.click(button);
+
+    await waitFor(() => {
+      expect(mockDispatch).toHaveBeenCalledWith(
+        pokemonApi.util.invalidateTags([{ type: 'Pokemon', id: 'pikachu' }])
+      );
+      expect(mockDispatch).toHaveBeenCalledWith({
+        type: 'pokemon/setPokemonLoading',
+        payload: { name: 'pikachu', loading: true },
+      });
+      expect(mockDispatch).toHaveBeenCalledWith({
+        type: 'pokemon/setPokemonError',
+        payload: { name: 'pikachu', error: 'Network error' },
+      });
+
+      expect(mockShowSnackbar).toHaveBeenCalledWith(
+        ' ❌ Errors: pikachu',
+        true
+      );
+    });
   });
 });
