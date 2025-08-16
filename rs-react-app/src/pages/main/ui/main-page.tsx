@@ -4,7 +4,11 @@ import { SearchInput } from './components';
 import { useContext } from 'react';
 
 export function MainPage() {
-  const { isLoaded } = useContext(PageContext);
+  const context = useContext(PageContext);
+  if (!context) {
+    throw new Error('PageContext must be used inside PageContext.Provider');
+  }
+  const { isLoaded } = context;
   return (
     <>
       <SearchInput />

@@ -1,7 +1,10 @@
+'use client';
+
 import { useContext, useState } from 'react';
 import { PageContext, AsyncButton, useSnackbar } from '@/shared';
 import { useDispatch } from 'react-redux';
 import { pokemonApi } from '@/features';
+import { useTranslations } from 'next-intl';
 
 export const RefetchButton = () => {
   const dispatch = useDispatch();
@@ -12,15 +15,16 @@ export const RefetchButton = () => {
   const { refetch, isLoaded } = context;
   const [isRefreshing, setIsRefreshing] = useState(false);
   const { showSnackbar } = useSnackbar();
+  const t = useTranslations('RefetchButton');
 
   const handleInvalidate = async () => {
     setIsRefreshing(true);
     try {
       dispatch(pokemonApi.util.resetApiState());
       refetch();
-      showSnackbar('✅ Cache fully reset and list refetched');
+      showSnackbar(t('success'));
     } catch {
-      showSnackbar('❌ Failed to refetch list', true);
+      showSnackbar(t('error'), true);
     } finally {
       setIsRefreshing(false);
     }
@@ -30,7 +34,7 @@ export const RefetchButton = () => {
     <AsyncButton
       onClick={handleInvalidate}
       isLoading={isRefreshing}
-      label="🗑️ Invalidate Cache & Refetch"
+      label={t('label')}
       disabled={isLoaded || isRefreshing}
       progress={100}
       showProgress={true}

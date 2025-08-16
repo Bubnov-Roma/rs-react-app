@@ -1,10 +1,10 @@
 'use client';
 
-import { Pagination } from '@/app/components/Pagination';
+import { Pagination } from '@/app/[locale]/components/Pagination';
 import { useSearchParams } from 'next/navigation';
 import { ensureSearchParams, isNumber, toArray } from '@/utils';
 import styles from './style.module.css';
-import { CardList } from '@/app/components/CardList';
+import { CardList } from '@/app/[locale]/components/CardList';
 import { SearchInput } from '../Search';
 import { useContext } from 'react';
 import { PageContext } from '@/shared';

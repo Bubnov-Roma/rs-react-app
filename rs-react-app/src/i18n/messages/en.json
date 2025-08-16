@@ -1,0 +1,59 @@
+{
+  "Header": {
+    "title": "Pokémon Search",
+    "switch": "Russian",
+    "main": "Main",
+    "about": "about"
+  },
+  "Search": {
+    "placeholder": "Enter Name Pokemon...",
+    "submit": "Search"
+  },
+  "Pagination": {
+    "prev": "Prev",
+    "next": "Next",
+    "placeholder": "Page {page}",
+    "errorOnlyNumbers": "Only numeric values are allowed",
+    "errorRange": "Enter a number from {min} to {max}",
+    "hint": "Type page from {min} to {max} and press Enter"
+  },
+  "Card": {
+    "close": "Close card",
+    "spriteAlt": "{name} sprite",
+    "type": "Type",
+    "height": "Height",
+    "weight": "Weight",
+    "battle": "Battles",
+    "pokemonTypes": {
+      "normal": "Normal",
+      "fire": "Fire",
+      "water": "Water",
+      "grass": "Grass",
+      "electric": "Electric",
+      "ice": "Ice",
+      "fighting": "Fighting",
+      "poison": "Poison",
+      "ground": "Ground",
+      "flying": "Flying",
+      "psychic": "Psychic",
+      "bug": "Bug",
+      "rock": "Rock",
+      "ghost": "Ghost",
+      "dragon": "Dragon",
+      "dark": "Dark",
+      "steel": "Steel",
+      "fairy": "Fairy"
+    }
+  },
+  "RefreshPokemonButton": {
+    "updateLabel": "🔁 Update {name}",
+    "success": "✅ {name} successfully updated",
+    "errorLoading": "Error loading",
+    "errorUpdating": "❌ Error updating {name}"
+  },
+  "RefetchButton": {
+    "label": "🗑️ Invalidate Cache & Refetch",
+    "success": "✅ Cache fully reset and list refetched",
+    "error": "❌ Failed to refetch list"
+  }
+}

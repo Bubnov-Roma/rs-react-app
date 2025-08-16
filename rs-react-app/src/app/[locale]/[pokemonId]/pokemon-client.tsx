@@ -1,9 +1,9 @@
 'use client';
 
-import PaginatedList from '@/app/components/PaginatedList';
+import PaginatedList from '@/app/[locale]/components/PaginatedList';
 import { useGetPokemonByNameQuery } from '@/features';
 import { LoadingComponent } from '@/shared';
-import Card from '@/app/components/CardDetail/card';
+import Card from '@/app/[locale]/components/CardDetail/card';
 
 export default function PokemonClient({ pokemonId }: { pokemonId: string }) {
   const { data: pokemon, isLoading: cardLoading } =

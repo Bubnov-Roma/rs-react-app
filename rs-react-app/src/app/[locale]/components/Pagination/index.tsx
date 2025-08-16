@@ -4,6 +4,7 @@ import { ChangeEvent, useState } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { ensureSearchParams, isNumber } from '@/utils';
 import style from './style.module.css';
+import { useTranslations } from 'next-intl';
 
 type Props = {
   totalItems: number;
@@ -18,6 +19,7 @@ export function Pagination({ totalItems, itemsPerPage, onPageChange }: Props) {
   const searchParams = ensureSearchParams(useSearchParams());
   const [inputValue, setInputValue] = useState('');
   const [error, setError] = useState('');
+  const t = useTranslations('Pagination');
 
   const rawPage = isNumber(searchParams.get('page'));
   const currentPage =
@@ -44,14 +46,14 @@ export function Pagination({ totalItems, itemsPerPage, onPageChange }: Props) {
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     if (!/^\d*$/.test(value)) {
-      setError('Only numeric values are allowed');
+      setError(t('errorOnlyNumbers'));
       return;
     }
     setInputValue(value);
     if (value === '') return setError('');
     const n = Number(value);
     if (n < 1 || n > totalPages)
-      setError(`Enter a number from 1 to ${totalPages}`);
+      setError(t('errorRange', { min: 1, max: totalPages }));
     else setError('');
   };
 
@@ -63,7 +65,7 @@ export function Pagination({ totalItems, itemsPerPage, onPageChange }: Props) {
             onClick={() => goToPage(currentPage - 1)}
             disabled={currentPage === 1}
           >
-            Prev
+            {t('prev')}
           </button>
           <input
             className={style.pagination_input}
@@ -72,21 +74,21 @@ export function Pagination({ totalItems, itemsPerPage, onPageChange }: Props) {
             pattern="[0-9]*"
             value={inputValue}
             onChange={handleInputChange}
-            placeholder={`Page ${currentPage}`}
+            placeholder={t('placeholder', { page: currentPage })}
             onKeyDown={handleInputKeyDown}
           />
           <button
             onClick={() => goToPage(currentPage + 1)}
             disabled={currentPage === totalPages}
           >
-            Next
+            {t('next')}
           </button>
         </div>
       </form>
       {error ? (
         <div className={style.error}>{error}</div>
       ) : (
-        <div>Type page from 1 to {totalPages} and tap Enter</div>
+        <div>{t('hint', { min: 1, max: totalPages })}</div>
       )}
     </div>
   );

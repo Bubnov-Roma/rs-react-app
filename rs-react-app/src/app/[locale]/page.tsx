@@ -1,5 +1,5 @@
 import ProvidersClient from '@/app/providers';
-import HomeClient from './home-client';
+import HomeClient from '@/app/[locale]/home-client';
 
 export default async function HomePage() {
   return (

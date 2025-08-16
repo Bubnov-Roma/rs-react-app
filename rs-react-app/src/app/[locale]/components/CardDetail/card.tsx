@@ -7,6 +7,7 @@ import style from './style.module.css';
 import { ensureSearchParams, isNumber } from '@/utils';
 import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 
 export default function Card(props: PokemonType) {
   const { name, sprites, types, height, weight, game_indices } = props;
@@ -18,6 +19,7 @@ export default function Card(props: PokemonType) {
 
   const router = useRouter();
   const searchParams = ensureSearchParams(useSearchParams());
+  const t = useTranslations('Card');
 
   useEffect(() => {
     const pageParam = isNumber(searchParams.get('page'));
@@ -44,13 +46,13 @@ export default function Card(props: PokemonType) {
       <button
         className={style.close_button}
         onClick={handleClick}
-        aria-label="Close card"
+        aria-label={t('close')}
       >
         ×
       </button>
       <Image
         src={sprites['front_default']}
-        alt={`${name} sprite`}
+        alt={t('spriteAlt', { name })}
         width={96}
         height={96}
         priority
@@ -58,19 +60,21 @@ export default function Card(props: PokemonType) {
       <div className={style.card_name}>{name.toUpperCase()}</div>
       <ul className={style.card_ul}>
         <li className={style.card_li}>
-          <span className={style.card_span}>Type: </span>
-          <span className={style.card_span}>{types[0]['type']['name']}</span>
+          <span className={style.card_span}>{t('type')}: </span>
+          <span className={style.card_span}>
+            {t(`pokemonTypes.${types[0]['type']['name']}`)}
+          </span>
         </li>
         <li className={style.card_li}>
-          <span className={style.card_span}>Height: </span>
-          <span className={style.card_span}> {height}</span>
+          <span className={style.card_span}>{t('height')}: </span>
+          <span className={style.card_span}>{height}</span>
         </li>
         <li className={style.card_li}>
-          <span className={style.card_span}>Weight: </span>
-          <span className={style.card_span}> {weight}</span>
+          <span className={style.card_span}>{t('weight')}: </span>
+          <span className={style.card_span}>{weight}</span>
         </li>
         <li className={style.card_li}>
-          <span className={style.card_span}>Battle: </span>
+          <span className={style.card_span}>{t('battle')}: </span>
           <span className={style.card_span}>{game_indices.length}</span>
         </li>
       </ul>

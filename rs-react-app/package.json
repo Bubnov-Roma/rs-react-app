@@ -19,6 +19,7 @@
     "@reduxjs/toolkit": "^2.8.2",
     "file-saver": "^2.0.5",
     "next": "^15.4.6",
+    "next-intl": "^4.3.4",
     "next-redux-wrapper": "^8.1.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",

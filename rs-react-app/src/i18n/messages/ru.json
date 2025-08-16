@@ -1,0 +1,60 @@
+{
+  "Header": {
+    "title": "Найди Покемона",
+    "switch": "Английский",
+    "main": "Главная",
+    "about": "Об авторе"
+  },
+  "Search": {
+    "placeholder": "Напиши имя покемона...",
+    "submit": "Поиск"
+  },
+  "Pagination": {
+    "prev": "Назад",
+    "next": "Вперёд",
+    "placeholder": "Страница {page}",
+    "errorOnlyNumbers": "Можно вводить только цифры",
+    "errorRange": "Введите число от {min} до {max}",
+    "hint": "Введите страницу от {min} до {max} и нажмите Enter"
+  },
+  "Card": {
+    "close": "Закрыть карточку",
+    "spriteAlt": "Спрайт {name}",
+    "type": "Тип",
+    "height": "Рост",
+    "weight": "Вес",
+    "battle": "Битв",
+    "pokemonTypes": {
+      "normal": "Обычный",
+      "fire": "Огонь",
+      "water": "Вода",
+      "grass": "Трава",
+      "electric": "Электричество",
+      "ice": "Лёд",
+      "fighting": "Боец",
+      "poison": "Яд",
+      "ground": "Земля",
+      "flying": "Летающий",
+      "psychic": "Психический",
+      "bug": "Насекомое",
+      "rock": "Камень",
+      "ghost": "Призрак",
+      "dragon": "Дракон",
+      "dark": "Тьма",
+      "steel": "Сталь",
+      "fairy": "Фея"
+    }
+  },
+  "RefreshPokemonButton": {
+    "updateLabel": "🔁 Обновить {name}",
+    "success": "✅ {name} успешно обновлён",
+    "errorLoading": "Ошибка загрузки",
+    "errorUpdating": "❌ Ошибка при обновлении {name}"
+  },
+
+  "RefetchButton": {
+    "label": "🗑️ Сбросить кэш и перезагрузить",
+    "success": "✅ Кэш полностью сброшен и список обновлён",
+    "error": "❌ Не удалось обновить список"
+  }
+}

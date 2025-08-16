@@ -10,12 +10,14 @@ import {
 } from '@/features';
 import { useState } from 'react';
 import style from './style.module.css';
+import { useTranslations } from 'next-intl';
 
 export const RefreshPokemonButton = ({ name }: { name: string }) => {
   const dispatch = useAppDispatch();
   const [loadPokemon] = useLazyGetPokemonByNameQuery();
   const [isRefreshing, setIsRefreshing] = useState(false);
   const { showSnackbar } = useSnackbar();
+  const t = useTranslations('RefreshPokemonButton');
 
   const handleRefresh = async () => {
     setIsRefreshing(true);
@@ -25,15 +27,15 @@ export const RefreshPokemonButton = ({ name }: { name: string }) => {
       dispatch(setPokemonLoading({ name, loading: true }));
       const result = await loadPokemon(name).unwrap();
       dispatch(addPokemon(result));
-      showSnackbar(`✅ ${name} success updated`);
+      showSnackbar(t('success', { name }));
     } catch (error) {
       dispatch(
         setPokemonError({
           name,
-          error: error?.data?.message || 'Error loading',
+          error: error?.data?.message || t('errorLoading'),
         })
       );
-      showSnackbar(`❌ Error updating ${name}`, true);
+      showSnackbar(t('errorUpdating', { name }), true);
     } finally {
       setIsRefreshing(false);
     }
@@ -43,11 +45,11 @@ export const RefreshPokemonButton = ({ name }: { name: string }) => {
     <AsyncButton
       onClick={handleRefresh}
       isLoading={isRefreshing}
-      label={`🔁 Update ${name}`}
+      label={t('updateLabel', { name })}
       disabled={isRefreshing}
       progress={100}
       showProgress={true}
-      className={`${style.refetch_button}`}
+      className={style.refetch_button}
     />
   );
 };

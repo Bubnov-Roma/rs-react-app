@@ -5,10 +5,16 @@ import { useContext, useState, type ChangeEvent } from 'react';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { ensureSearchParams } from '@/utils';
 import style from './style.module.css';
+import { useTranslations } from 'next-intl';
 
 export const SearchInput = () => {
-  const { setNumberPage, storedSearchValue, setStoredSearchValue } =
-    useContext(PageContext);
+  const context = useContext(PageContext);
+  if (!context) {
+    throw new Error('PageContext must be used inside PageContext.Provider');
+  }
+  const { setNumberPage, storedSearchValue, setStoredSearchValue } = context;
+
+  const t = useTranslations('Search');
 
   const [value, setValue] = useState(storedSearchValue);
 
@@ -42,9 +48,9 @@ export const SearchInput = () => {
           type="text"
           value={value}
           onChange={handleInputChange}
-          placeholder="Enter Name Pokemon"
+          placeholder={t('placeholder')}
         />
-        <button type="submit">Search</button>
+        <button type="submit">{t('submit')}</button>
       </form>
     </div>
   );
