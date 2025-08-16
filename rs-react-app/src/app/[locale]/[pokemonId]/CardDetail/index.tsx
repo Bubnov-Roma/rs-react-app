@@ -6,7 +6,7 @@ import { useEffect } from 'react';
 import { useGetPokemonByNameQuery } from '@/features/pokemon-api/pokemon-api';
 import { useParams, useRouter } from 'next/navigation';
 
-export const ProductDetail = () => {
+export const Detail = () => {
   const params = useParams();
   const router = useRouter();
   const pokemonName = params?.pokemonId as string | undefined;

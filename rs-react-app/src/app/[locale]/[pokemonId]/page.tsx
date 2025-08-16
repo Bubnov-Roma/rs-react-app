@@ -1,4 +1,3 @@
-import ProvidersClient from '@/app/providers';
 import PokemonClient from './pokemon-client';
 
 export default async function PokemonPage({
@@ -8,9 +7,5 @@ export default async function PokemonPage({
 }) {
   const { pokemonId } = await params;
 
-  return (
-    <ProvidersClient>
-      <PokemonClient pokemonId={pokemonId} />
-    </ProvidersClient>
-  );
+  return <PokemonClient pokemonId={pokemonId} />;
 }

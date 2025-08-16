@@ -1,10 +1,5 @@
-import ProvidersClient from '@/app/providers';
-import HomeClient from '@/app/[locale]/home-client';
+import PaginatedList from './components/PaginatedList';
 
 export default async function HomePage() {
-  return (
-    <ProvidersClient>
-      <HomeClient />
-    </ProvidersClient>
-  );
+  return <PaginatedList itemsPerPage={5} />;
 }

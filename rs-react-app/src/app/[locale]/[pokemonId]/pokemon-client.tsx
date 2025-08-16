@@ -3,7 +3,8 @@
 import PaginatedList from '@/app/[locale]/components/PaginatedList';
 import { useGetPokemonByNameQuery } from '@/features';
 import { LoadingComponent } from '@/shared';
-import Card from '@/app/[locale]/components/CardDetail/card';
+import { Detail } from '@/app/[locale]/[pokemonId]/CardDetail';
+import { notFound } from 'next/navigation';
 
 export default function PokemonClient({ pokemonId }: { pokemonId: string }) {
   const { data: pokemon, isLoading: cardLoading } =
@@ -16,7 +17,7 @@ export default function PokemonClient({ pokemonId }: { pokemonId: string }) {
   return (
     <div>
       <PaginatedList itemsPerPage={5} />
-      {pokemon ? <Card {...pokemon} /> : null}
+      {pokemon ? <Detail /> : notFound()}
     </div>
   );
 }

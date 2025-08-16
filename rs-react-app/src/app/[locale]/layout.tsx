@@ -1,8 +1,9 @@
 import { NextIntlClientProvider } from 'next-intl';
 import { ReactNode } from 'react';
-import ProvidersClient from '../providers';
+import ProvidersClient from './providers';
 import Header from '@/shared/ui/header';
-import '@/app/globals.css';
+import '@/app/[locale]/globals.css';
+import { getPokemonList } from '@/features/pokemon-api/server';
 
 export default async function LocaleLayout({
   children,
@@ -15,11 +16,13 @@ export default async function LocaleLayout({
 
   const messages = (await import(`../../i18n/messages/${locale}.json`)).default;
 
+  const pokemons = await getPokemonList();
+
   return (
     <html lang={locale}>
       <body>
         <NextIntlClientProvider locale={locale} messages={messages}>
-          <ProvidersClient>
+          <ProvidersClient initialList={pokemons}>
             <Header />
             <main>{children}</main>
           </ProvidersClient>

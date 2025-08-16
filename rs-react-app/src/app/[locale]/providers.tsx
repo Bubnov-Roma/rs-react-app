@@ -4,16 +4,22 @@ import { ReactNode, useMemo } from 'react';
 import { Provider } from 'react-redux';
 import { makeStore } from '@/app/store/store';
 import type { RootState } from '@/app/store/root-reducer';
-
-import { SnackbarProvider, ThemeProvider, PageContextProvider } from '@/shared';
+import {
+  PageContextProvider,
+  PokemonList,
+  SnackbarProvider,
+  ThemeProvider,
+} from '@/shared';
 import persistStore from 'redux-persist/es/persistStore';
 
 type ProvidersProps = {
+  initialList: PokemonList[];
   initialState?: Partial<RootState>;
   children: ReactNode;
 };
 
 export default function ProvidersClient({
+  initialList,
   initialState,
   children,
 }: ProvidersProps) {
@@ -23,25 +29,19 @@ export default function ProvidersClient({
     return persistStore(store);
   }, [store]);
 
-  if (!persistor) {
-    return (
-      <Provider store={store}>
-        <SnackbarProvider>
-          <ThemeProvider>
-            <PageContextProvider>{children}</PageContextProvider>
-          </ThemeProvider>
-        </SnackbarProvider>
-      </Provider>
-    );
-  }
-
-  return (
+  const content = (
     <Provider store={store}>
-      <SnackbarProvider>
-        <ThemeProvider>
-          <PageContextProvider>{children}</PageContextProvider>
-        </ThemeProvider>
-      </SnackbarProvider>
+      <PageContextProvider initialList={initialList}>
+        <SnackbarProvider>
+          <ThemeProvider>{children}</ThemeProvider>
+        </SnackbarProvider>
+      </PageContextProvider>
     </Provider>
   );
+
+  if (!persistor) {
+    return content;
+  }
+
+  return content;
 }
