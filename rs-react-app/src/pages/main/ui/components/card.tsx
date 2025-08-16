@@ -1,8 +1,11 @@
-import { useNavigate } from 'react-router-dom';
-import style from './style.module.css';
+'use client';
+
 import { PageContext, type PokemonType } from '@/shared';
 import { useContext } from 'react';
 import { RefreshPokemonButton } from './refresh-pokemon-button';
+import { useRouter, useSearchParams } from 'next/navigation';
+import style from './style.module.css';
+import { isNumber } from '@/utils';
 
 export const Card = (props: PokemonType) => {
   const { name, sprites, types, height, weight, game_indices } = props;
@@ -10,9 +13,9 @@ export const Card = (props: PokemonType) => {
   const navigate = useNavigate();
 
   const handleClick = () => {
-    const page = numberPage ?? 1;
+    const page = isNumber(numberPage);
     if (!numberPage) setNumberPage(page);
-    navigate(`/page/${page}`);
+    router.push(`/?page=${page}`);
   };
 
   return (

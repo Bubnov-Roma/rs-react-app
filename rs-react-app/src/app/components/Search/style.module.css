@@ -1,0 +1,23 @@
+.form_block {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.form {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.input {
+  width: inherit;
+  border: 1px solid #d0d9a2;
+  border-radius: 8px 8px 8px;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+}

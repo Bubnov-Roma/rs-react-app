@@ -1,4 +1,4 @@
-main {
+.main_content {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -194,7 +194,7 @@ main {
 }
 
 @media screen and (width <= 600px) {
-  .main {
+  .main_content {
     min-height: 26rem;
     min-width: 16rem;
   }

@@ -48,5 +48,11 @@ export default tseslint.config(
         map: [['@/shared', './src/shared']],
       },
     },
+  },
+  {
+    files: ['app/**/layout.tsx', 'app/**/page.tsx'],
+    rules: {
+      'react-refresh/only-export-components': 'off',
+    },
   }
 );

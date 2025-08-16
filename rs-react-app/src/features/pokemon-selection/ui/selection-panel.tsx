@@ -1,3 +1,5 @@
+'use client';
+
 import { useAppDispatch, useAppSelector } from '@/shared';
 import { clearSelected } from '../model';
 import { saveAs } from 'file-saver';

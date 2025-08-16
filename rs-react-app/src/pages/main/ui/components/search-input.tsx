@@ -1,3 +1,5 @@
+'use client';
+
 import { PageContext } from '@/shared';
 import { useContext, useState, type ChangeEvent } from 'react';
 import style from './style.module.css';

@@ -85,13 +85,13 @@ export interface PaginationProps {
 }
 
 export interface PageContextProps {
-  readonly children: React.ReactElement;
+  readonly children: React.ReactNode;
 }
 export interface PageContextType {
   readonly isLoaded: boolean;
-  readonly pageContext: PokemonList[];
+  readonly pageContext: PokemonList[] | null | undefined;
   readonly Filtered: (value: string) => void;
-  readonly numberPage: number;
+  readonly numberPage: number | null;
   readonly setNumberPage: (page: number | null) => void;
   readonly refetch: () => void;
   readonly storedSearchValue: string;

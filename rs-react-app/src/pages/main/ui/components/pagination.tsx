@@ -1,6 +1,8 @@
+'use client';
+
 import { PageContext, PaginationProps } from '@/shared';
-import { ChangeEvent, useContext, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { ChangeEvent, useContext, useState } from 'react';
+import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import style from './style.module.css';
 
 export const Pagination = ({
@@ -9,15 +11,21 @@ export const Pagination = ({
   onPageChange,
 }: PaginationProps) => {
   const totalPages = Math.ceil(totalItems / itemsPerPage);
-  const navigate = useNavigate();
+
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
   const [currentPage, setCurrentPage] = useState(1);
-  const { numberPage, setNumberPage } = useContext(PageContext);
+  const { setNumberPage } = useContext(PageContext);
   const [inputValue, setInputValue] = useState('');
   const [error, setError] = useState('');
 
   useEffect(() => {
-    if (numberPage) setCurrentPage(numberPage);
-  }, [numberPage]);
+    const pageParam = Number(searchParams.get('page') || 1);
+    setCurrentPage(pageParam);
+    setNumberPage(pageParam);
+  }, [searchParams, setNumberPage]);
 
   const goToPage = (
     page: number,
@@ -26,8 +34,10 @@ export const Pagination = ({
     event?.preventDefault();
     if (page >= 1 && page <= totalPages) {
       setCurrentPage(page);
-      navigate(`?page=${page}`, { replace: true });
-      onPageChange(page);
+      const params = new URLSearchParams(searchParams.toString());
+      params.set('page', String(page));
+      router.push(`${pathname}?${params.toString()}`);
+      onPageChange?.(page);
       setNumberPage(page);
     }
   };

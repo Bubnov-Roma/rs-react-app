@@ -1,0 +1,107 @@
+.card {
+  min-width: 17rem;
+  position: relative;
+  flex: 1;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 1rem;
+  box-sizing: border-box;
+  border-radius: 12px;
+  box-shadow: 0 2px 4px rgba(208, 208, 208, 0.506);
+  border: 1px solid #e5e7eb;
+  background: rgba(255, 255, 255, 0.1);
+  opacity: 0;
+  transform: translateX(100%);
+  animation: slideIn 0.4s forwards;
+  transition:
+    opacity 0.3s ease,
+    transform 0.3s ease;
+}
+
+.card.exit {
+  animation: slideOut 0.3s forwards;
+}
+
+.refetch_button {
+  width: 100%;
+}
+
+@keyframes slideIn {
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideOut {
+  to {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+}
+
+.card_name {
+  display: flex;
+  align-self: anchor-center;
+  justify-content: center;
+  align-items: center;
+  letter-spacing: 0.3rem;
+  text-align: center;
+  color: var(--color-link);
+  width: min-content;
+  font-size: 0.8rem;
+}
+
+.card_img {
+  width: 100%;
+  max-width: 10rem;
+  margin: auto;
+}
+
+.card_ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  padding-bottom: 1rem;
+}
+
+.card_li {
+  display: flex;
+  justify-content: space-between;
+}
+
+.card_span {
+  font-size: 0.8rem;
+}
+
+@media screen and (width < 630px) {
+  .card_name {
+    letter-spacing: 0.2rem;
+    font-size: 0.6rem;
+  }
+
+  .card_list {
+    order: 2;
+  }
+
+  .card {
+    width: 100%;
+    flex-direction: column;
+    order: 1;
+    max-width: 90%;
+    margin: auto;
+  }
+
+  .close_button {
+    position: static;
+    display: block;
+    margin: 0.5rem auto 0 auto;
+    font-size: 20px;
+  }
+
+  .content_wrapper {
+    padding-bottom: 150px;
+  }
+}

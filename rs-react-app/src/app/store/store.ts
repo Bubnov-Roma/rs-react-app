@@ -1,17 +1,14 @@
 import { configureStore } from '@reduxjs/toolkit';
-import { persistStore } from 'redux-persist';
-import { pokemonApi } from '@/features/pokemon-api/pokemon-api';
-import { rootReducer } from './root-reducer';
+import { rootReducer, type RootState } from './root-reducer';
+import { pokemonApi } from '@/features';
 
-export const store = configureStore({
-  reducer: rootReducer,
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware({ serializableCheck: false }).concat(
-      pokemonApi.middleware
-    ),
-});
+type PreloadedState<T> = Partial<T>;
 
-export const persistor = persistStore(store);
-
-export type RootState = ReturnType<typeof store.getState>;
-export type AppDispatch = typeof store.dispatch;
+export function makeStore(preloadedState?: PreloadedState<RootState>) {
+  return configureStore({
+    reducer: rootReducer,
+    preloadedState,
+    middleware: (gdm) =>
+      gdm({ serializableCheck: false }).concat(pokemonApi.middleware),
+  });
+}

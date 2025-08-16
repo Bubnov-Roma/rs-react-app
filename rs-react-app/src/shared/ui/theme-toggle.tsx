@@ -1,5 +1,8 @@
-import { useEffect } from 'react';
+'use client';
+
+import { useEffect, useState } from 'react';
 import { useTheme } from '../hooks';
+import Image from 'next/image';
 import style from './style.module.css';
 
 const DARK_ICON = '/assets/img/sun.png';
@@ -7,8 +10,10 @@ const LIGHT_ICON = '/assets/img/moon.png';
 
 export const ThemeToggle = () => {
   const { theme, toggleTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
     document.body.classList.toggle('dark_theme', theme === 'dark');
   }, [theme]);
 
@@ -21,11 +26,16 @@ export const ThemeToggle = () => {
         className={style.checkbox}
       />
       <span className={style.track}>
-        <img
-          src={theme === 'dark' ? LIGHT_ICON : DARK_ICON}
-          alt="theme icon"
-          className={style.thumb}
-        />
+        {mounted && (
+          <Image
+            src={theme === 'dark' ? LIGHT_ICON : DARK_ICON}
+            alt="theme icon"
+            className={style.thumb}
+            width={24}
+            height={24}
+            priority
+          />
+        )}
       </span>
     </label>
   );

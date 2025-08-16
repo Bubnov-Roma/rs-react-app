@@ -1,3 +1,5 @@
+'use client';
+
 import { ReactNode, useEffect } from 'react';
 import { Theme, useStorage } from '@/shared';
 import { ThemeContext } from './theme-context';

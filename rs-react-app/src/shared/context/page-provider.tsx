@@ -1,11 +1,19 @@
-import { useCallback, useMemo } from 'react';
-import { PageContextProps, PokemonList, useStorage } from '@/shared';
+'use client';
 
+import { useCallback, useMemo, useEffect } from 'react';
+import { PageContextProps, PokemonList, useStorage } from '@/shared';
 import { useGetAllPokemonQuery } from '@/features';
 import { PageContext } from './page-context';
+import { useSearchParams } from 'next/navigation';
+import { ensureSearchParams } from '@/utils';
 
-export const PageContextProvider = ({ children }: PageContextProps) => {
+type Props = PageContextProps & {
+  initialList?: PokemonList[];
+};
+
+export const PageContextProvider = ({ children, initialList = [] }: Props) => {
   const { data, refetch, isFetching } = useGetAllPokemonQuery(undefined);
+  const searchParams = ensureSearchParams(useSearchParams());
 
   const {
     storedValue: storedSearchValue,
@@ -14,29 +22,42 @@ export const PageContextProvider = ({ children }: PageContextProps) => {
 
   const { storedValue: numberPage, setStoredValue: setNumberPage } = useStorage(
     'page',
-    null
+    1
   );
+
+  useEffect(() => {
+    const pageFromUrl = Number(searchParams.get('page')) || 1;
+    if (pageFromUrl !== numberPage) {
+      setNumberPage(pageFromUrl);
+    }
+  }, [numberPage, searchParams, setNumberPage]);
+
+  useEffect(() => {
+    const searchFromUrl = searchParams.get('search') || '';
+    if (searchFromUrl !== storedSearchValue) {
+      setStoredSearchValue(searchFromUrl);
+    }
+  }, [searchParams, storedSearchValue, setStoredSearchValue]);
 
   const Filtered = useCallback(
     (value: string) => {
-      if (!data?.results) return;
-      const filtered = data.results.filter((item: PokemonList) =>
-        item.name.includes(value)
+      const source = data?.results ?? initialList;
+      if (!source) return [];
+      return source.filter((item: PokemonList) =>
+        item.name.toLowerCase().includes(value.toLowerCase())
       );
-      setStoredSearchValue(value);
-      return filtered;
     },
-    [data, setStoredSearchValue]
+    [data, initialList]
   );
 
   const pageContext = useMemo(() => {
-    if (!data?.results) return null;
+    const source = data?.results ?? initialList;
+    if (!source) return [];
     if (storedSearchValue) {
-      const result = Filtered(storedSearchValue);
-      return result;
+      return Filtered(storedSearchValue);
     }
-    return data.results;
-  }, [data, storedSearchValue, Filtered]);
+    return source;
+  }, [data, initialList, storedSearchValue, Filtered]);
 
   return (
     <PageContext.Provider

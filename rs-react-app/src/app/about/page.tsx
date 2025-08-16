@@ -1,7 +1,9 @@
-import { type ReactElement } from 'react';
-import styles from './about.module.css';
+'use client';
 
-export function AboutPage(): ReactElement {
+import { type ReactElement } from 'react';
+import styles from './style.module.css';
+
+export default function AboutPage(): ReactElement {
   return (
     <div className={styles.about_page}>
       <p className={styles.title}>About</p>

@@ -1,3 +1,5 @@
+'use client';
+
 import { FC, ReactNode, useCallback, useState } from 'react';
 import { Snackbar } from '@/shared';
 import { SnackbarContext } from './snackbar-context';

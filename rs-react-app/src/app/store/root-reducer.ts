@@ -1,7 +1,10 @@
-import { pokemonSelectionReducer, pokemonApi } from '@/features';
 import { combineReducers } from '@reduxjs/toolkit';
+import { pokemonApi } from '@/features/pokemon-api/pokemon-api';
+import { pokemonSelectionReducer } from '@/features';
 import { persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
+
+const isServer = typeof window === 'undefined';
 
 const persistConfig = {
   key: 'pokemonSelection',
@@ -9,12 +12,13 @@ const persistConfig = {
   whitelist: ['pokemonSelection'],
 };
 
-const persistedPokemonSelectionReducer = persistReducer(
-  persistConfig,
-  pokemonSelectionReducer
-);
+const pokemonSelection = isServer
+  ? pokemonSelectionReducer
+  : persistReducer(persistConfig, pokemonSelectionReducer);
 
 export const rootReducer = combineReducers({
-  pokemonSelection: persistedPokemonSelectionReducer,
+  pokemonSelection,
   [pokemonApi.reducerPath]: pokemonApi.reducer,
 });
+
+export type RootState = ReturnType<typeof rootReducer>;
