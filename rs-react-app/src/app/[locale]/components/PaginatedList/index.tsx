@@ -8,6 +8,7 @@ import { CardList } from '@/app/[locale]/components/CardList';
 import { SearchInput } from '../Search';
 import { useContext } from 'react';
 import { PageContext } from '@/shared';
+import { SelectionPanel } from '@/features';
 
 type Props = {
   itemsPerPage: number;
@@ -39,6 +40,7 @@ export default function PaginatedList({ itemsPerPage }: Props) {
         itemsPerPage={itemsPerPage}
         onPageChange={() => {}}
       />
+      <SelectionPanel />
     </div>
   );
 }

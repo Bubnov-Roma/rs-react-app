@@ -9,9 +9,11 @@ import {
 import { useLazyGetPokemonByNameQuery, pokemonApi } from '@/features';
 import { addPokemon, setPokemonError, setPokemonLoading } from '@/features';
 import { useState } from 'react';
+import { useTranslations } from 'next-intl';
 import style from './style.module.css';
 
 export const RefreshAllSelectedButton = () => {
+  const t = useTranslations('RefreshAllSelectedButton');
   const dispatch = useAppDispatch();
   const selected = useAppSelector((state) => state.pokemonSelection.selected);
   const [loadPokemon] = useLazyGetPokemonByNameQuery();
@@ -43,7 +45,7 @@ export const RefreshAllSelectedButton = () => {
         dispatch(
           setPokemonError({
             name,
-            error: error?.data?.message || 'Error updated',
+            error: error?.data?.message || t('errorUpdate'),
           })
         );
         errorList.push(name);
@@ -52,8 +54,9 @@ export const RefreshAllSelectedButton = () => {
     }
 
     let msg = '';
-    if (successList.length) msg += `✅ Updated: ${successList.join(', ')}`;
-    if (errorList.length) msg += ` ❌ Errors: ${errorList.join(', ')}`;
+    if (successList.length)
+      msg += `✅ ${t('updated')}: ${successList.join(', ')}`;
+    if (errorList.length) msg += ` ❌ ${t('errors')}: ${errorList.join(', ')}`;
 
     showSnackbar(msg, errorList.length > 0);
 
@@ -66,7 +69,7 @@ export const RefreshAllSelectedButton = () => {
     <AsyncButton
       onClick={handleRefreshAll}
       isLoading={isRefreshing}
-      label={`🔁 Update`}
+      label={`🔁 ${t('update')}`}
       disabled={isDisabled || isRefreshing}
       progress={progress}
       showProgress={true}

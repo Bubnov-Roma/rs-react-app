@@ -11,5 +11,3 @@ export async function fetchPokemonByName(name: string) {
   if (!res.ok) throw new Error(`Pokémon ${name} not found`);
   return res.json();
 }
-
-// https://pokeapi.co/api/v2/pokemon?limit=1302&offset=0

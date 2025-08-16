@@ -1,10 +1,14 @@
 import { configureStore } from '@reduxjs/toolkit';
-import { rootReducer, type RootState } from './root-reducer';
+import { rootReducer } from './root-reducer';
 import { pokemonApi } from '@/features';
 
-type PreloadedState<T> = Partial<T>;
+export type RootState = ReturnType<typeof rootReducer>;
+export type AppStore = ReturnType<typeof makeStore>;
+export type AppDispatch = AppStore['dispatch'];
 
-export function makeStore(preloadedState?: PreloadedState<RootState>) {
+type PreloadedState = Partial<RootState>;
+
+export function makeStore(preloadedState?: PreloadedState) {
   return configureStore({
     reducer: rootReducer,
     preloadedState,

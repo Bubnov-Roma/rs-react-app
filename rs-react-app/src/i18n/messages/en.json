@@ -55,5 +55,18 @@
     "label": "🗑️ Invalidate Cache & Refetch",
     "success": "✅ Cache fully reset and list refetched",
     "error": "❌ Failed to refetch list"
+  },
+  "SelectionPanel": {
+    "selected": "Selected: {count}",
+    "unselect": "Unselect all",
+    "download": "Download CSV",
+    "downloadError": "Failed to generate CSV",
+    "downloadSuccess": "CSV with {count} Pokémon downloaded"
+  },
+  "RefreshAllSelectedButton": {
+    "update": "Update",
+    "updated": "Updated",
+    "errors": "Errors",
+    "errorUpdate": "Error updating"
   }
 }
