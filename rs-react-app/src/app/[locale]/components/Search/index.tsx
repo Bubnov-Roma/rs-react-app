@@ -6,16 +6,18 @@ import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { ensureSearchParams } from '@/utils';
 import style from './style.module.css';
 import { useTranslations } from 'next-intl';
+import PageLoader from '@/app/[locale]/components/PageLoader';
 
 export const SearchInput = () => {
   const context = useContext(PageContext);
   if (!context) {
     throw new Error('PageContext must be used inside PageContext.Provider');
   }
-  const { setNumberPage, storedSearchValue, setStoredSearchValue } = context;
+
+  const { setNumberPage, storedSearchValue, setStoredSearchValue, isLoading } =
+    context;
 
   const t = useTranslations('Search');
-
   const [value, setValue] = useState(storedSearchValue);
 
   const router = useRouter();
@@ -42,6 +44,7 @@ export const SearchInput = () => {
 
   return (
     <div className={style.form_block}>
+      {isLoading && <PageLoader />}
       <form className={style.form} onSubmit={handleSubmit}>
         <input
           className={style.input}
@@ -49,11 +52,13 @@ export const SearchInput = () => {
           value={value}
           onChange={handleInputChange}
           placeholder={t('placeholder')}
+          disabled={isLoading}
         />
         <button
           type="submit"
           className={style.search_btn}
           aria-label={t('submit')}
+          disabled={isLoading}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"

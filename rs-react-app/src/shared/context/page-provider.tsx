@@ -78,7 +78,7 @@ export const PageContextProvider = ({ children, initialList = [] }: Props) => {
   return (
     <PageContext.Provider
       value={{
-        isLoaded: isFetching,
+        isLoading: isFetching,
         pageContext,
         Filtered,
         numberPage,

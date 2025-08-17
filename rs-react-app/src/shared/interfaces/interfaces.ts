@@ -87,7 +87,7 @@ export interface PageContextProps {
   readonly children: React.ReactNode;
 }
 export type PageContextType = {
-  isLoaded: boolean;
+  isLoading: boolean;
   pageContext: PokemonList[];
   Filtered: (value: string) => PokemonList[];
   numberPage: number;

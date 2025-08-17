@@ -1,7 +1,6 @@
 .overlay {
   position: fixed;
   inset: 0;
-  /* background: rgba(0, 0, 0, 0.55); */
   background: var(--color-bg-overlay);
   display: flex;
   justify-content: center;
