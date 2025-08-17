@@ -201,10 +201,6 @@
     font-size: 0.6rem;
   }
 
-  .card_list {
-    order: 2;
-  }
-
   .card {
     width: 100%;
     flex-direction: column;

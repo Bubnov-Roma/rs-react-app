@@ -1,32 +1,41 @@
-'use client';
-
-import { type ReactElement } from 'react';
 import styles from './style.module.css';
+import { getTranslations } from 'next-intl/server';
+import Image from 'next/image';
 
-export default function AboutPage(): ReactElement {
+export default async function AboutPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: 'About' });
+
+  const totalPokemons = 1010;
+  const randomPokemonId = Math.floor(Math.random() * totalPokemons) + 1;
+
   return (
     <div className={styles.about_page}>
-      <p className={styles.title}>About</p>
+      <p className={styles.title}>{t('title')}</p>
+
       <div className={styles.aboutContent}>
-        <p className={styles.text}>
-          Hello. My name is Roma Bubnov. I graduated from the Saratov State
-          Conservatory with a degree in music performance. My fascination with
-          programming started around 2019. Like many people, I was curious about
-          the world behind the software we use every day. My first programming
-          language was Java, but i quickly found that JavaScript resonated with
-          me in a way that Java hadn&apos;t initially. I think it was the
-          dynamic nature of the language and its versatility. In the final
-          project, my team and I decided to try our hand at React; it is on
-          studying this JavaScript library that I would like to focus further
-          development.
-        </p>
-        <div className={styles.rs}>
-          <a
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.logo}
-            href="https://rs.school/courses/reactjs"
-          ></a>
+        <p className={styles.text}>{t('text')}</p>
+
+        <div className={styles.pokemonImage}>
+          <Image
+            src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${randomPokemonId}.png`}
+            alt="Funny Pokemon"
+            width={300}
+            height={300}
+            priority
+            placeholder="blur"
+            blurDataURL={`data:image/svg+xml;base64,${btoa(`
+  <svg xmlns="http://www.w3.org/2000/svg" width="300" height="300" viewBox="0 0 24 24" fill="none">
+    <circle cx="12" cy="12" r="10" stroke="#888" stroke-width="2" fill="#f0f0f0"/>
+    <circle cx="12" cy="12" r="3" fill="#888"/>
+    <line x1="2" y1="12" x2="22" y2="12" stroke="#888" stroke-width="2"/>
+  </svg>
+`)}`}
+          />
         </div>
       </div>
     </div>

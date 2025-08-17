@@ -1,70 +1,80 @@
-.card {
-  min-width: 17rem;
-  position: relative;
-  flex: 1;
-  height: 100%;
+.drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 50%;
+  height: 100vh;
+  background: var(--color-drawer-bg);
+  box-shadow: -2px 0 6px rgba(0, 0, 0, 0.15);
+  z-index: 5;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   padding: 1rem;
   box-sizing: border-box;
-  border-radius: 12px;
-  box-shadow: 0 2px 4px rgba(208, 208, 208, 0.506);
-  border: 1px solid #e5e7eb;
-  background: rgba(255, 255, 255, 0.1);
-  opacity: 0;
   transform: translateX(100%);
   animation: slideIn 0.4s forwards;
-  transition:
-    opacity 0.3s ease,
-    transform 0.3s ease;
+  backdrop-filter: blur(6px);
 }
 
-.card.exit {
-  animation: slideOut 0.3s forwards;
+.card_content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  height: 100%;
 }
 
-.refetch_button {
-  width: 100%;
+.close_button {
+  padding: 0;
+  position: absolute;
+  top: 10px;
+  left: -16px;
+  border: none;
+  cursor: pointer;
+  width: 32px;
+  height: 32px;
+  background-color: --color-button-bg;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+  transition: transform 0.3s ease;
 }
 
-@keyframes slideIn {
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
+.close_button .line {
+  position: absolute;
+  width: 15px;
+  height: 1px;
+  background: white;
+  transition: transform 0.3s ease;
 }
 
-@keyframes slideOut {
-  to {
-    opacity: 0;
-    transform: translateX(100%);
-  }
+.close_button .line:first-child {
+  transform: rotate(45deg);
+}
+
+.close_button .line:last-child {
+  transform: rotate(-45deg);
+}
+
+.close_button:active {
+  transform: rotate(180deg);
 }
 
 .card_name {
-  display: flex;
-  align-self: anchor-center;
-  justify-content: center;
-  align-items: center;
+  font-size: 1rem;
+  font-weight: bold;
   letter-spacing: 0.3rem;
   text-align: center;
   color: var(--color-link);
-  width: min-content;
-  font-size: 0.8rem;
-}
-
-.card_img {
-  width: 100%;
-  max-width: 10rem;
-  margin: auto;
 }
 
 .card_ul {
   list-style-type: none;
   padding: 0;
   margin: 0;
-  padding-bottom: 1rem;
 }
 
 .card_li {
@@ -73,35 +83,24 @@
 }
 
 .card_span {
-  font-size: 0.8rem;
+  font-size: 0.9rem;
 }
 
-@media screen and (width < 630px) {
-  .card_name {
-    letter-spacing: 0.2rem;
-    font-size: 0.6rem;
+@keyframes slideIn {
+  to {
+    transform: translateX(0);
   }
+}
 
-  .card_list {
-    order: 2;
-  }
-
-  .card {
+@media screen and (max-width: 630px) {
+  .drawer {
     width: 100%;
-    flex-direction: column;
-    order: 1;
-    max-width: 90%;
-    margin: auto;
   }
 
   .close_button {
-    position: static;
-    display: block;
-    margin: 0.5rem auto 0 auto;
-    font-size: 20px;
-  }
-
-  .content_wrapper {
-    padding-bottom: 150px;
+    left: auto;
+    right: 10px;
+    top: 10px;
+    box-shadow: none;
   }
 }

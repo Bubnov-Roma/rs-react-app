@@ -1,11 +1,12 @@
 'use client';
 
-import { useCallback, useMemo, useEffect } from 'react';
+import { useCallback, useMemo, useEffect, useState } from 'react';
 import { PageContextProps, PokemonList, useStorage } from '@/shared';
 import { useGetAllPokemonQuery } from '@/features';
 import { PageContext } from './page-context';
 import { useSearchParams } from 'next/navigation';
 import { ensureSearchParams } from '@/utils';
+import PageLoader from '@/app/[locale]/components/PageLoader';
 
 type Props = PageContextProps & {
   initialList?: PokemonList[];
@@ -25,19 +26,30 @@ export const PageContextProvider = ({ children, initialList = [] }: Props) => {
     1
   );
 
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [hydrated, setHydrated] = useState(false);
+
   useEffect(() => {
+    setHydrated(true);
+  }, []);
+
+  useEffect(() => {
+    if (!hydrated) return;
+
     const pageFromUrl = Number(searchParams.get('page')) || 1;
     if (pageFromUrl !== numberPage) {
       setNumberPage(pageFromUrl);
     }
-  }, [numberPage, searchParams, setNumberPage]);
+  }, [hydrated, numberPage, searchParams, setNumberPage]);
 
   useEffect(() => {
+    if (!hydrated) return;
+
     const searchFromUrl = searchParams.get('search') || '';
     if (searchFromUrl !== storedSearchValue) {
       setStoredSearchValue(searchFromUrl);
     }
-  }, [searchParams, storedSearchValue, setStoredSearchValue]);
+  }, [hydrated, searchParams, storedSearchValue, setStoredSearchValue]);
 
   const Filtered = useCallback(
     (value: string) => {
@@ -59,6 +71,10 @@ export const PageContextProvider = ({ children, initialList = [] }: Props) => {
     return source;
   }, [data, initialList, storedSearchValue, Filtered]);
 
+  if (!hydrated) {
+    return <PageLoader />;
+  }
+
   return (
     <PageContext.Provider
       value={{
@@ -70,6 +86,8 @@ export const PageContextProvider = ({ children, initialList = [] }: Props) => {
         refetch,
         storedSearchValue,
         setStoredSearchValue,
+        isDrawerOpen,
+        setIsDrawerOpen,
       }}
     >
       {children}

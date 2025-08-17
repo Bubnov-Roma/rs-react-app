@@ -1,19 +1,27 @@
 .card_list_block {
   display: flex;
   width: 100%;
-  align-items: center;
-  justify-content: center;
   flex-direction: column;
   padding: 1rem 0;
+  transition: transform 0.3s ease;
+}
+
+.center_align {
+  align-items: center;
+  justify-content: center;
+}
+
+.left_align {
+  align-items: flex-start;
+  justify-content: flex-start;
 }
 
 .wrapper {
   display: flex;
+  flex-direction: column;
   gap: 1rem;
   width: 100%;
   flex-wrap: wrap;
-  min-height: 24rem;
-  padding-top: 1rem;
 }
 
 .card_list {
@@ -34,7 +42,13 @@
 }
 
 @media screen and (width < 630px) {
-  .card_list {
-    order: 2;
+  .center_align {
+    align-items: center;
+    justify-content: center;
+  }
+
+  .left_align {
+    align-items: center;
+    justify-content: center;
   }
 }

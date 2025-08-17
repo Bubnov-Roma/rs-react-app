@@ -86,16 +86,18 @@ export interface PaginationProps {
 export interface PageContextProps {
   readonly children: React.ReactNode;
 }
-export interface PageContextType {
-  readonly isLoaded: boolean;
-  readonly pageContext: PokemonList[] | null | undefined;
-  readonly Filtered: (value: string) => void;
-  readonly numberPage: number | null;
-  readonly setNumberPage: (page: number | null) => void;
-  readonly refetch: () => void;
-  readonly storedSearchValue: string;
-  readonly setStoredSearchValue: (value: string | null) => void;
-}
+export type PageContextType = {
+  isLoaded: boolean;
+  pageContext: PokemonList[];
+  Filtered: (value: string) => PokemonList[];
+  numberPage: number;
+  setNumberPage: (page: number) => void;
+  refetch: () => void;
+  storedSearchValue: string;
+  setStoredSearchValue: (val: string) => void;
+  isDrawerOpen: boolean;
+  setIsDrawerOpen: (val: boolean) => void;
+};
 
 export interface UseLocalStorageType<T> {
   readonly storedValue: T;

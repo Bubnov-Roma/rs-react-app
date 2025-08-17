@@ -34,6 +34,7 @@ body.theme__dark {
   --color-button-text: #fff;
   --color-input-bg: #333;
   --color-border: #666;
+  --color-drawer-bg: rgba(0, 0, 0, 0.6);
 }
 
 #root {
@@ -72,6 +73,13 @@ html {
   transition:
     background 0.3s,
     color 0.3s;
+}
+
+main {
+  height: 100%;
+  margin: 0 auto;
+  width: 90%;
+  padding-bottom: 12rem;
 }
 
 h1 {

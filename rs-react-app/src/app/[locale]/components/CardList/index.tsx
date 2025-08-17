@@ -7,6 +7,7 @@ import {
   useAppSelector,
   DataListProps,
   PokemonList,
+  PageContext,
 } from '@/shared';
 import {
   addPokemon,
@@ -15,10 +16,12 @@ import {
   unselectedPokemon,
   useLazyGetPokemonByNameQuery,
 } from '@/features';
-import { useRef } from 'react';
+import { useContext, useRef } from 'react';
 import { RefetchButton } from './refetch-button';
 import { useSearchParams } from 'next/navigation';
-import { ensureSearchParams } from '@/utils';
+import { ensureSearchParams, toArray } from '@/utils';
+import styles from './style.module.css';
+import { Pagination } from '../Pagination';
 
 export const CardList = ({
   data,
@@ -27,10 +30,17 @@ export const CardList = ({
 }: DataListProps) => {
   const dispatch = useAppDispatch();
   const selected = useAppSelector((state) => state.pokemonSelection.selected);
+
   const [loadPokemon] = useLazyGetPokemonByNameQuery();
   const lastUnsubscribeRef = useRef<(() => void) | undefined>(undefined);
+
   const searchParams = ensureSearchParams(useSearchParams());
   const searchValue = searchParams.get('search') || '';
+
+  const context = useContext(PageContext);
+  if (!context) {
+    throw new Error('PageContext must be used inside PageContext.Provider');
+  }
 
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
@@ -71,9 +81,17 @@ export const CardList = ({
   };
 
   return (
-    <div className={style.card_list_block}>
+    <div
+      className={`${styles.card_list_block} ${
+        context.isDrawerOpen ? styles.left_align : styles.center_align
+      }`}
+    >
       <RefetchButton />
-      <div className={style.wrapper}>
+      <div
+        className={`${styles.wrapper} ${
+          context.isDrawerOpen ? styles.left_align : styles.wrapper
+        }`}
+      >
         <div className={style.card_list}>
           {currentItems.map((item) => {
             const isLoading = selected[item.name]?.loading ?? false;
@@ -103,6 +121,11 @@ export const CardList = ({
             );
           })}
         </div>
+        <Pagination
+          totalItems={toArray(data).length}
+          itemsPerPage={itemsPerPage}
+          onPageChange={() => {}}
+        />
       </div>
     </div>
   );

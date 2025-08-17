@@ -15,7 +15,13 @@ export default function Card(props: PokemonType) {
   if (!context) {
     throw new Error('PageContext must be used inside PageContext.Provider');
   }
-  const { numberPage, setNumberPage, setStoredSearchValue } = context;
+  const { numberPage, setNumberPage, setStoredSearchValue, setIsDrawerOpen } =
+    context;
+
+  useEffect(() => {
+    setIsDrawerOpen(true);
+    return () => setIsDrawerOpen(false);
+  }, [setIsDrawerOpen]);
 
   const router = useRouter();
   const searchParams = ensureSearchParams(useSearchParams());
@@ -29,7 +35,7 @@ export default function Card(props: PokemonType) {
     if (searchValue) setStoredSearchValue(searchValue);
   }, [searchParams, setNumberPage, setStoredSearchValue]);
 
-  const handleClick = () => {
+  const handleClose = () => {
     const page = isNumber(numberPage);
     setNumberPage(page);
 
@@ -42,44 +48,47 @@ export default function Card(props: PokemonType) {
   };
 
   return (
-    <div className={style.card}>
+    <div className={style.drawer}>
       <button
         className={style.close_button}
-        onClick={handleClick}
+        onClick={handleClose}
         aria-label={t('close')}
       >
-        ×
+        <span className={style.line}></span>
+        <span className={style.line}></span>
       </button>
-      <Image
-        src={sprites['front_default']}
-        alt={t('spriteAlt', { name })}
-        width={96}
-        height={96}
-        priority
-      />
-      <div className={style.card_name}>{name.toUpperCase()}</div>
-      <ul className={style.card_ul}>
-        <li className={style.card_li}>
-          <span className={style.card_span}>{t('type')}: </span>
-          <span className={style.card_span}>
-            {t(`pokemonTypes.${types[0]['type']['name']}`)}
-          </span>
-        </li>
-        <li className={style.card_li}>
-          <span className={style.card_span}>{t('height')}: </span>
-          <span className={style.card_span}>{height}</span>
-        </li>
-        <li className={style.card_li}>
-          <span className={style.card_span}>{t('weight')}: </span>
-          <span className={style.card_span}>{weight}</span>
-        </li>
-        <li className={style.card_li}>
-          <span className={style.card_span}>{t('battle')}: </span>
-          <span className={style.card_span}>{game_indices.length}</span>
-        </li>
-      </ul>
-      <div style={{ display: 'flex', gap: '8px' }}>
-        <RefreshPokemonButton name={name} />
+      <div className={style.card_content}>
+        <Image
+          src={sprites['front_default']}
+          alt={t('spriteAlt', { name })}
+          width={96}
+          height={96}
+          priority
+        />
+        <div className={style.card_name}>{name.toUpperCase()}</div>
+        <ul className={style.card_ul}>
+          <li className={style.card_li}>
+            <span className={style.card_span}>{t('type')}: </span>
+            <span className={style.card_span}>
+              {t(`pokemonTypes.${types[0]['type']['name']}`)}
+            </span>
+          </li>
+          <li className={style.card_li}>
+            <span className={style.card_span}>{t('height')}: </span>
+            <span className={style.card_span}>{height}</span>
+          </li>
+          <li className={style.card_li}>
+            <span className={style.card_span}>{t('weight')}: </span>
+            <span className={style.card_span}>{weight}</span>
+          </li>
+          <li className={style.card_li}>
+            <span className={style.card_span}>{t('battle')}: </span>
+            <span className={style.card_span}>{game_indices.length}</span>
+          </li>
+        </ul>
+        <div style={{ display: 'flex', gap: '8px' }}>
+          <RefreshPokemonButton name={name} />
+        </div>
       </div>
     </div>
   );
