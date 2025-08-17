@@ -1,6 +1,6 @@
 'use client';
 
-import Link from 'next/link';
+import { Link } from '@/navigation';
 import style from './style.module.css';
 import {
   useAppDispatch,
@@ -96,6 +96,7 @@ export const CardList = ({
           {currentItems.map((item) => {
             const isLoading = selected[item.name]?.loading ?? false;
             const isError = Boolean(selected[item.name]?.error);
+
             return (
               <div key={item.name} className={style.card_item}>
                 <input
@@ -105,9 +106,13 @@ export const CardList = ({
                   disabled={isLoading}
                 />
                 <Link
-                  href={`/${item.name}?page=${currentPage}${
-                    searchValue ? `&search=${searchValue}` : ''
-                  }`}
+                  href={{
+                    pathname: `/${item.name}`,
+                    query: {
+                      page: currentPage,
+                      ...(searchValue ? { search: searchValue } : {}),
+                    },
+                  }}
                 >
                   {item.name.toLocaleUpperCase()}
                 </Link>

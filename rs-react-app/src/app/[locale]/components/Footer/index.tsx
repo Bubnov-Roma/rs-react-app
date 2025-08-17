@@ -1,6 +1,6 @@
 'use client';
 
-import Link from 'next/link';
+import { Link } from '@/navigation';
 import styles from './footer.module.css';
 import { RSLogo } from './rs-logo';
 
