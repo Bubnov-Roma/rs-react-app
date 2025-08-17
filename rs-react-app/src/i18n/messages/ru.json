@@ -10,8 +10,6 @@
     "submit": "Поиск"
   },
   "Pagination": {
-    "prev": "Назад",
-    "next": "Вперёд",
     "placeholder": "Страница {page}",
     "errorOnlyNumbers": "Можно вводить только цифры",
     "errorRange": "Введите число от {min} до {max}",

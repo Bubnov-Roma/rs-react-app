@@ -64,9 +64,24 @@ export function Pagination({ totalItems, itemsPerPage, onPageChange }: Props) {
           <button
             onClick={() => goToPage(currentPage - 1)}
             disabled={currentPage === 1}
+            className={style.arrow_btn}
+            aria-label="Previous page"
           >
-            {t('prev')}
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="28"
+              height="28"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <polyline points="15 18 9 12 15 6" />
+            </svg>
           </button>
+
           <input
             className={style.pagination_input}
             type="text"
@@ -77,11 +92,26 @@ export function Pagination({ totalItems, itemsPerPage, onPageChange }: Props) {
             placeholder={t('placeholder', { page: currentPage })}
             onKeyDown={handleInputKeyDown}
           />
+
           <button
             onClick={() => goToPage(currentPage + 1)}
             disabled={currentPage === totalPages}
+            className={style.arrow_btn}
+            aria-label="Next page"
           >
-            {t('next')}
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="28"
+              height="28"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <polyline points="9 18 15 12 9 6" />
+            </svg>
           </button>
         </div>
       </form>

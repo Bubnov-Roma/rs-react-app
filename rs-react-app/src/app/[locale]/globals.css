@@ -16,25 +16,27 @@
   --color-text: #000;
   --color-bg: #e4e3d7;
   --color-link: #061943;
-  --color-link-hover: #96b400;
+  --color-link-hover: #0a389ac9;
   --color-button-bg: #0a389ac9;
   --color-button-text: #fff;
   --color-input-bg: #f9f9f9;
   --color-border: #d0d9a2;
   --color-accent: #ff6600;
-  --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 body.theme__dark {
-  --color-text: #eee;
+  --color-text: #fffef6;
   --color-bg: #222;
-  --color-link: #d0d9a2;
-  --color-link-hover: #7073d4;
+  --color-link: #f2faca;
+  --color-link-hover: #eaff82;
   --color-button-bg: #444;
   --color-button-text: #fff;
+  --color-button-hover: #d0d9a2;
   --color-input-bg: #333;
   --color-border: #666;
   --color-drawer-bg: rgba(0, 0, 0, 0.6);
+  --box-shadow: 0 4px 12px rgba(255, 255, 255, 0.15);
 }
 
 #root {
@@ -79,7 +81,6 @@ main {
   height: 100%;
   margin: 0 auto;
   width: 90%;
-  padding-bottom: 12rem;
 }
 
 h1 {
@@ -104,12 +105,7 @@ button {
 }
 
 button:hover {
-  border-color: #96b400;
-}
-
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+  border-color: var(--color-button-hover);
 }
 
 input,

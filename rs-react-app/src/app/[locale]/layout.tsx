@@ -5,6 +5,7 @@ import Header from '@/shared/ui/header';
 import PageLoader from '@/app/[locale]/components/PageLoader';
 import '@/app/[locale]/globals.css';
 import { getPokemonList } from '@/features/pokemon-api/server';
+import Footer from './components/Footer';
 
 export default async function LocaleLayout({
   children,
@@ -27,6 +28,7 @@ export default async function LocaleLayout({
             <PageLoader />
             <Header />
             <main>{children}</main>
+            <Footer />
           </ProvidersClient>
         </NextIntlClientProvider>
       </body>

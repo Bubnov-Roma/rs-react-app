@@ -8,6 +8,7 @@ import { ensureSearchParams, isNumber } from '@/utils';
 import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
+import { FallbackPokemon } from './fallback';
 
 export default function Card(props: PokemonType) {
   const { name, sprites, types, height, weight, game_indices } = props;
@@ -58,13 +59,17 @@ export default function Card(props: PokemonType) {
         <span className={style.line}></span>
       </button>
       <div className={style.card_content}>
-        <Image
-          src={sprites['front_default']}
-          alt={t('spriteAlt', { name })}
-          width={96}
-          height={96}
-          priority
-        />
+        {sprites['front_default'] ? (
+          <Image
+            src={sprites['front_default']}
+            alt={t('spriteAlt', { name })}
+            width={96}
+            height={96}
+            priority
+          />
+        ) : (
+          <FallbackPokemon width={96} height={96} className="text-gray-400" />
+        )}
         <div className={style.card_name}>{name.toUpperCase()}</div>
         <ul className={style.card_ul}>
           <li className={style.card_li}>

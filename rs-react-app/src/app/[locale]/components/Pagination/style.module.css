@@ -35,3 +35,40 @@
 .error {
   color: #b46000;
 }
+
+.arrow_btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    color 0.2s ease;
+}
+
+.arrow_btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.arrow_btn:hover:not(:disabled) {
+  animation: wiggle 0.4s ease-in-out;
+}
+
+@keyframes wiggle {
+  0% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-2px);
+  }
+  50% {
+    transform: translateX(2px);
+  }
+  75% {
+    transform: translateX(-1px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
