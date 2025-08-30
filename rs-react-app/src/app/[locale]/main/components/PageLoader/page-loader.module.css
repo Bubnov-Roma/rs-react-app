@@ -1,0 +1,105 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-bg-overlay);
+  transition: opacity 0.3s ease;
+  z-index: 1000;
+}
+
+.fadeIn {
+  opacity: 1;
+}
+
+.fadeOut {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.loader {
+  position: relative;
+  width: 120px;
+  height: 120px;
+}
+
+.pokeball {
+  width: 70px;
+  height: 70px;
+  border: 3px solid black;
+  border-radius: 50%;
+  background: linear-gradient(to bottom, white 50%, red 50%);
+  position: relative;
+  margin: auto;
+  animation: spin 1.5s linear infinite;
+}
+
+.pokeball::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 16px;
+  height: 16px;
+  background: white;
+  border: 2px solid black;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  animation: pulse 1s ease-in-out infinite;
+}
+
+.sparks {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.sparks span {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 6px;
+  height: 6px;
+  background: gold;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  animation: spark 1s linear infinite;
+  animation-delay: calc(var(--i) * 0.03s);
+}
+
+@keyframes spark {
+  0% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(
+        calc(-50% + 100px * cos(var(--i) * 22.5deg)),
+        calc(-50% + 100px * sin(var(--i) * 22.5deg))
+      )
+      scale(0);
+    opacity: 0;
+  }
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    background: white;
+    box-shadow: 0 0 4px rgba(255, 0, 0, 0.5);
+  }
+  50% {
+    background: red;
+    box-shadow: 0 0 12px rgba(255, 0, 0, 0.9);
+  }
+}

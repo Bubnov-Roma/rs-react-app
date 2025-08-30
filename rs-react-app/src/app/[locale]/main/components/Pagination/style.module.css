@@ -1,0 +1,99 @@
+.pagination {
+  text-align: center;
+}
+
+.pagination_block {
+  margin: auto;
+  padding: 1rem 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  gap: 1rem;
+  box-sizing: border-box;
+  max-width: 19rem;
+}
+
+.form {
+  position: relative;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 8px 40px 8px 12px;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.search_btn {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  border: none;
+  background: transparent;
+  color: var(--color-link);
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.search_btn:hover {
+  transform: translateY(-50%) scale(1.1);
+  color: var(--color-link-hover);
+}
+
+.search_btn:active {
+  transform: translateY(-50%) scale(0.95);
+}
+
+.error {
+  color: #b46000;
+}
+
+.arrow_btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    color 0.2s ease;
+}
+
+.arrow_btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.arrow_btn:hover:not(:disabled) {
+  animation: wiggle 0.4s ease-in-out;
+}
+
+@keyframes wiggle {
+  0% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-2px);
+  }
+  50% {
+    transform: translateX(2px);
+  }
+  75% {
+    transform: translateX(-1px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}

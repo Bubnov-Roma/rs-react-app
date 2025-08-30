@@ -1,4 +1,3 @@
-import { store } from '@/app/store/store';
 import { type ErrorInfo, ReactNode } from 'react';
 
 export interface ErrorBoundaryProps {
@@ -85,18 +84,21 @@ export interface PaginationProps {
 }
 
 export interface PageContextProps {
-  readonly children: React.ReactElement;
+  readonly children: React.ReactNode;
 }
-export interface PageContextType {
-  readonly isLoaded: boolean;
-  readonly pageContext: PokemonList[];
-  readonly Filtered: (value: string) => void;
-  readonly numberPage: number;
-  readonly setNumberPage: (page: number | null) => void;
-  readonly refetch: () => void;
-  readonly storedSearchValue: string;
-  readonly setStoredSearchValue: (value: string | null) => void;
-}
+export type PageContextType = {
+  isLoading: boolean;
+  pageContext: PokemonList[];
+  Filtered: (value: string) => PokemonList[];
+  numberPage: number;
+  setNumberPage: (page: number) => void;
+  refetch: () => void;
+  storedSearchValue: string;
+  setStoredSearchValue: (val: string) => void;
+  isDrawerOpen: boolean;
+  setIsDrawerOpen: (val: boolean) => void;
+  totalItems: number;
+};
 
 export interface UseLocalStorageType<T> {
   readonly storedValue: T;
@@ -109,6 +111,3 @@ export interface ThemeContextType {
   readonly theme: Theme;
   readonly toggleTheme: () => void;
 }
-
-export type RootState = ReturnType<typeof store.getState>;
-export type AppDispatch = typeof store.dispatch;

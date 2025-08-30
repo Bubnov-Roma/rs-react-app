@@ -1,23 +1,33 @@
-import { useContext } from 'react';
-import { Link } from 'react-router-dom';
-import { ThemeToggle, PageContext } from '@/shared';
-import style from './style.module.css';
+'use client';
 
-export const Header = () => {
-  const { numberPage } = useContext(PageContext);
+import { useTranslations } from 'next-intl';
+import { useSearchParams } from 'next/navigation';
+import { Link } from '@/navigation';
+import { ThemeToggle } from './theme-toggle';
+import style from './style.module.css';
+import { LanguageSwitcher } from './language-switcher';
+
+export default function Header() {
+  const t = useTranslations('Header');
+  const searchParams = useSearchParams();
+
+  const query = searchParams.toString();
+
+  const mainHref = query ? `/main?${query}` : `/main`;
 
   return (
     <header className={style.header}>
       <div className={style.wrapper}>
-        <h1 className={style.title}>
-          <Link to="/">Pokémon Search</Link>
-        </h1>
+        <Link href={mainHref}>
+          <h1>{t('title')}</h1>
+        </Link>
         <nav className={style.navigation_bar}>
-          <Link to={`page/${numberPage}`}>Main</Link>
-          <Link to={`about`}>About</Link>
+          <Link href={mainHref}>{t('main')}</Link>
+          <Link href={`/about`}>{t('about')}</Link>
         </nav>
+        <LanguageSwitcher />
         <ThemeToggle />
       </div>
     </header>
   );
-};
+}

@@ -1,0 +1,119 @@
+.about_page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0 10%;
+}
+
+.title {
+  font-size: 3.4rem;
+  font-weight: bold;
+  width: 100%;
+  margin: 20px 0;
+  text-align: start;
+}
+
+.aboutContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  width: 100%;
+}
+
+.text {
+  flex: 1;
+  font-size: 1rem;
+  line-height: 1.5;
+  text-align: justify;
+  max-width: 600px;
+}
+
+.pokemonImage {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  max-height: 500px;
+}
+
+.rs {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 30px;
+}
+
+.logo {
+  width: 3rem;
+  height: 3rem;
+  background-image: url('/assets/img/rs.png');
+  background-size: 100%;
+  border-radius: 10%;
+}
+
+.navigate {
+  width: 100%;
+  padding: 0.6em 1.2em;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  transition: border-color 0.25s;
+}
+
+.navigate:hover {
+  border-color: #96b400;
+}
+.navigate:focus,
+.navigate:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}
+
+@media screen and (max-width: 768px) {
+  .aboutContent {
+    flex-direction: column;
+  }
+  .text {
+    font-size: 0.9rem;
+    max-width: 20rem;
+    text-align: left;
+  }
+}
+
+@media screen and (min-width: 769px) {
+  .aboutContent {
+    flex-direction: row;
+    align-items: stretch;
+  }
+  .text {
+    font-size: 1rem;
+    padding-right: 2rem;
+  }
+}
+
+@keyframes bounceIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.5) translateY(50px);
+  }
+  60% {
+    opacity: 1;
+    transform: scale(1.05) translateY(-10px);
+  }
+  80% {
+    transform: scale(0.95) translateY(5px);
+  }
+  100% {
+    transform: scale(1) translateY(0);
+  }
+}
+
+.pokemonImage img {
+  animation: bounceIn 1s ease forwards;
+}

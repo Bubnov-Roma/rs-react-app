@@ -1,53 +1,14 @@
-import { Component, type ErrorInfo } from 'react';
-import type { ErrorBoundaryProps, ErrorBoundaryState } from '../interfaces';
-import style from './style.module.css';
+'use client';
 
-interface PropsWithNavigate extends ErrorBoundaryProps {
-  navigate?: (path: string) => void;
-}
+import { useRouter } from 'next/navigation';
+import ErrorBoundaryBase from './error-boundary-base';
 
-export class ErrorBoundary extends Component<
-  PropsWithNavigate,
-  ErrorBoundaryState
-> {
-  constructor(props: PropsWithNavigate) {
-    super(props);
-    this.state = {
-      hasError: false,
-      error: null,
-      errorInfo: null,
-    };
-  }
+export function ErrorBoundary(props: { children: React.ReactNode }) {
+  const router = useRouter();
 
-  static getDerivedStateFromError(error: Error): ErrorBoundaryState {
-    return { hasError: true, error, errorInfo: null };
-  }
-
-  componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    this.setState({ error, errorInfo });
-    if (this.props.onError) {
-      this.props.onError(error, errorInfo);
-    }
-  }
-
-  refreshPage = () => {
-    const page = localStorage.getItem('page');
-    const numberPage = page ? parseInt(page, 10) : 1;
-    this.props.navigate?.(`/page/${numberPage}`);
+  const refreshPage = () => {
+    router.push('/');
   };
 
-  render() {
-    if (this.state.hasError) {
-      return (
-        <div className={style.error_boundary}>
-          <h1 className={style.message}>Something went wrong.</h1>
-          <button className={style.button} onClick={this.refreshPage}>
-            Reload Page
-          </button>
-        </div>
-      );
-    }
-
-    return this.props.children;
-  }
+  return <ErrorBoundaryBase {...props} refreshPage={refreshPage} />;
 }

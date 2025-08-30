@@ -6,15 +6,11 @@ import react from 'eslint-plugin-react';
 import tseslint from 'typescript-eslint';
 import eslintPluginPrettier from 'eslint-plugin-prettier/recommended';
 import reactCompiler from 'eslint-plugin-react-compiler';
+import nextPlugin from '@next/eslint-plugin-next';
 
 export default tseslint.config(
   { ignores: ['dist', 'coverage'] },
   {
-    extends: [
-      js.configs.recommended,
-      ...tseslint.configs.strict,
-      eslintPluginPrettier,
-    ],
     files: ['**/*.{ts,tsx}'],
     languageOptions: {
       ecmaVersion: 2020,
@@ -25,6 +21,7 @@ export default tseslint.config(
       'react-hooks': reactHooks,
       'react-refresh': reactRefresh,
       'react-compiler': reactCompiler,
+      '@next/next': nextPlugin,
     },
     rules: {
       ...reactHooks.configs.recommended.rules,
@@ -35,6 +32,7 @@ export default tseslint.config(
       'react-compiler/react-compiler': 'error',
       ...react.configs.recommended.rules,
       ...react.configs['jsx-runtime'].rules,
+      ...nextPlugin.configs['core-web-vitals'].rules,
     },
     settings: {
       react: {
@@ -47,6 +45,17 @@ export default tseslint.config(
         extensions: ['.vue', '.js', '.ts', '.tsx', '.scss', '.d.ts'],
         map: [['@/shared', './src/shared']],
       },
+    },
+    extends: [
+      js.configs.recommended,
+      ...tseslint.configs.strict,
+      eslintPluginPrettier,
+    ],
+  },
+  {
+    files: ['app/**/layout.tsx', 'app/**/page.tsx'],
+    rules: {
+      'react-refresh/only-export-components': 'off',
     },
   }
 );

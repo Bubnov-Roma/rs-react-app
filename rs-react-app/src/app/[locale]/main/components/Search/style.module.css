@@ -1,0 +1,44 @@
+.form_block {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+.form {
+  position: relative;
+  width: 100%;
+}
+
+.input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 8px 40px 8px 12px;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.search_btn {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  border: none;
+  background: transparent;
+  color: var(--color-link);
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.search_btn:hover {
+  transform: translateY(-50%) scale(1.1);
+  color: var(--color-link-hover);
+}
+
+.search_btn:active {
+  transform: translateY(-50%) scale(0.95);
+}
