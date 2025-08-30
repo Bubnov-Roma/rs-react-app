@@ -1,5 +1,10 @@
-import PaginatedList from './components/PaginatedList';
+import { redirect } from 'next/navigation';
 
-export default async function HomePage() {
-  return <PaginatedList itemsPerPage={5} />;
+export default async function HomePage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  redirect(`/${locale}/main`);
 }

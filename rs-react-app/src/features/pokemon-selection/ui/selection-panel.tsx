@@ -1,11 +1,6 @@
 'use client';
 
-import {
-  CardListType,
-  useAppDispatch,
-  useAppSelector,
-  useSnackbar,
-} from '@/shared';
+import { useAppDispatch, useAppSelector, useSnackbar } from '@/shared';
 import { clearSelected } from '../model';
 import style from './style.module.css';
 import { RefreshAllSelectedButton } from './refresh-all-selected-button';
@@ -19,12 +14,12 @@ export const SelectionPanel = () => {
   const t = useTranslations('SelectionPanel');
 
   const selectedWithData = useMemo(
-    () => Object.values(selected).filter((item: CardListType) => item.data),
+    () => Object.values(selected).filter((item) => item.data),
     [selected]
   );
 
   const handleDownload = async () => {
-    const pokemon = selectedWithData.map((s: CardListType) => s.data);
+    const pokemon = selectedWithData.map((s) => s.data);
     if (pokemon.length === 0) return;
 
     try {

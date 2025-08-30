@@ -1,13 +1,12 @@
 .overlay {
   position: fixed;
   inset: 0;
-  background: var(--color-bg-overlay);
   display: flex;
-  justify-content: center;
   align-items: center;
-  z-index: 9999;
-  opacity: 0;
-  transition: opacity 0.3s ease-in-out;
+  justify-content: center;
+  background: var(--color-bg-overlay);
+  transition: opacity 0.3s ease;
+  z-index: 1000;
 }
 
 .fadeIn {
@@ -16,6 +15,7 @@
 
 .fadeOut {
   opacity: 0;
+  pointer-events: none;
 }
 
 .loader {

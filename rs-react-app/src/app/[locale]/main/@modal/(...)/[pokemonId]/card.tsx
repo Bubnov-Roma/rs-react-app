@@ -1,23 +1,25 @@
 'use client';
 
-import { PageContext, type PokemonType } from '@/shared';
-import { useContext, useEffect } from 'react';
+import { usePageContext, type PokemonType } from '@/shared';
+import { useEffect } from 'react';
 import { RefreshPokemonButton } from './refresh-pokemon-button';
 import style from './style.module.css';
 import { ensureSearchParams, isNumber } from '@/utils';
 import Image from 'next/image';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { FallbackPokemon } from './fallback';
 
 export default function Card(props: PokemonType) {
   const { name, sprites, types, height, weight, game_indices } = props;
-  const context = useContext(PageContext);
-  if (!context) {
-    throw new Error('PageContext must be used inside PageContext.Provider');
-  }
-  const { numberPage, setNumberPage, setStoredSearchValue, setIsDrawerOpen } =
-    context;
+
+  const {
+    numberPage,
+    setNumberPage,
+    setStoredSearchValue,
+    setIsDrawerOpen,
+    storedSearchValue,
+  } = usePageContext();
 
   useEffect(() => {
     setIsDrawerOpen(true);
@@ -25,6 +27,7 @@ export default function Card(props: PokemonType) {
   }, [setIsDrawerOpen]);
 
   const router = useRouter();
+  const pathname = usePathname();
   const searchParams = ensureSearchParams(useSearchParams());
   const t = useTranslations('Card');
 
@@ -37,15 +40,16 @@ export default function Card(props: PokemonType) {
   }, [searchParams, setNumberPage, setStoredSearchValue]);
 
   const handleClose = () => {
-    const page = isNumber(numberPage);
-    setNumberPage(page);
-
-    const searchValue = searchParams.get('search');
     const query = new URLSearchParams();
-    query.set('page', String(page));
-    if (searchValue) query.set('search', searchValue);
+    query.set('page', String(numberPage));
+    if (storedSearchValue) query.set('search', storedSearchValue);
 
-    router.push(`/?${query.toString()}`);
+    const segments = pathname.split('/');
+    const mainIndex = segments.indexOf('main');
+    const basePath =
+      mainIndex !== -1 ? segments.slice(0, mainIndex + 1).join('/') : pathname;
+
+    router.push(`${basePath}?${query.toString()}`, { scroll: false });
   };
 
   return (

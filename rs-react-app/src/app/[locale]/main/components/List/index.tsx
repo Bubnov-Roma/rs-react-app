@@ -5,9 +5,8 @@ import style from './style.module.css';
 import {
   useAppDispatch,
   useAppSelector,
-  DataListProps,
   PokemonList,
-  PageContext,
+  usePageContext,
 } from '@/shared';
 import {
   addPokemon,
@@ -16,35 +15,18 @@ import {
   unselectedPokemon,
   useLazyGetPokemonByNameQuery,
 } from '@/features';
-import { useContext, useRef } from 'react';
+import { useRef } from 'react';
 import { RefetchButton } from './refetch-button';
-import { useSearchParams } from 'next/navigation';
-import { ensureSearchParams, toArray } from '@/utils';
-import styles from './style.module.css';
 import { Pagination } from '../Pagination';
 
-export const CardList = ({
-  data,
-  currentPage,
-  itemsPerPage,
-}: DataListProps) => {
+export const List = () => {
   const dispatch = useAppDispatch();
   const selected = useAppSelector((state) => state.pokemonSelection.selected);
-
   const [loadPokemon] = useLazyGetPokemonByNameQuery();
   const lastUnsubscribeRef = useRef<(() => void) | undefined>(undefined);
 
-  const searchParams = ensureSearchParams(useSearchParams());
-  const searchValue = searchParams.get('search') || '';
-
-  const context = useContext(PageContext);
-  if (!context) {
-    throw new Error('PageContext must be used inside PageContext.Provider');
-  }
-
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const currentItems = data.slice(startIndex, endIndex);
+  const context = usePageContext();
+  const { pageContext, numberPage, storedSearchValue } = context;
 
   const isSelected = (name: string) => Boolean(selected[name]);
 
@@ -82,18 +64,18 @@ export const CardList = ({
 
   return (
     <div
-      className={`${styles.card_list_block} ${
-        context.isDrawerOpen ? styles.left_align : styles.center_align
+      className={`${style.card_list_block} ${
+        context.isDrawerOpen ? style.left_align : style.center_align
       }`}
     >
       <RefetchButton />
       <div
-        className={`${styles.wrapper} ${
-          context.isDrawerOpen ? styles.left_align : styles.wrapper
+        className={`${style.wrapper} ${
+          context.isDrawerOpen ? style.left_align : style.wrapper
         }`}
       >
         <div className={style.card_list}>
-          {currentItems.map((item) => {
+          {pageContext.map((item) => {
             const isLoading = selected[item.name]?.loading ?? false;
             const isError = Boolean(selected[item.name]?.error);
 
@@ -107,30 +89,27 @@ export const CardList = ({
                 />
                 <Link
                   href={{
-                    pathname: `/${item.name}`,
+                    pathname: `/main/${item.name}`,
                     query: {
-                      page: currentPage,
-                      ...(searchValue ? { search: searchValue } : {}),
+                      page: numberPage,
+                      ...(storedSearchValue
+                        ? { search: storedSearchValue }
+                        : {}),
                     },
                   }}
+                  scroll={false}
                 >
                   {item.name.toLocaleUpperCase()}
                 </Link>
                 {isLoading && <span style={{ marginLeft: 8 }}>Loading...</span>}
                 {isError && (
-                  <span style={{ color: 'red', marginLeft: 8 }}>
-                    {selected[item.name]?.error}
-                  </span>
+                  <span style={{ color: 'red', marginLeft: 8 }}>❌</span>
                 )}
               </div>
             );
           })}
         </div>
-        <Pagination
-          totalItems={toArray(data).length}
-          itemsPerPage={itemsPerPage}
-          onPageChange={() => {}}
-        />
+        <Pagination />
       </div>
     </div>
   );

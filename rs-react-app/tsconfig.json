@@ -2,13 +2,19 @@
   "compilerOptions": {
     "target": "ES2020",
     "useDefineForClassFields": true,
-    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "lib": [
+      "ES2020",
+      "DOM",
+      "DOM.Iterable"
+    ],
     "module": "esnext",
     "skipLibCheck": true,
     "esModuleInterop": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": [
+        "src/*"
+      ]
     },
     "moduleResolution": "node",
     "allowImportingTsExtensions": true,
@@ -19,7 +25,10 @@
     "allowJs": true,
     "forceConsistentCasingInFileNames": true,
     "incremental": true,
-    "types": ["@testing-library/jest-dom", "@types/node"],
+    "types": [
+      "@testing-library/jest-dom",
+      "@types/node"
+    ],
     "plugins": [
       {
         "name": "next"
@@ -29,11 +38,14 @@
     "strictNullChecks": true
   },
   "include": [
+    "./dist/types/**/*.ts",
+    "./next-env.d.ts",
     "src",
     "test",
     "vite.config.ts",
-    "./dist/types/**/*.ts",
-    "./next-env.d.ts"
+    ".next/types/**/*.ts"
   ],
-  "exclude": ["./node_modules"]
+  "exclude": [
+    "./node_modules"
+  ]
 }

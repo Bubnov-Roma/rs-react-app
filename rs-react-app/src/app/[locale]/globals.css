@@ -15,7 +15,7 @@
 
   --color-text: #000;
   --color-bg: #e4e3d7;
-  --color-bg-overlay: rgba(248, 248, 248, 0.836);
+  --color-bg-overlay: rgba(248, 248, 248, 0.6);
   --color-link: #061943;
   --color-link-hover: #0a389ac9;
   --color-button-bg: #0a389ac9;
@@ -29,7 +29,7 @@
 body.theme__dark {
   --color-text: #fffef6;
   --color-bg: #222;
-  --color-bg-overlay: rgba(0, 0, 0, 0.836);
+  --color-bg-overlay: rgba(0, 0, 0, 0.6);
   --color-link: #f2faca;
   --color-link-hover: #eaff82;
   --color-button-bg: #444;
@@ -121,6 +121,11 @@ select {
   transition:
     background-color 0.3s ease,
     color 0.3s ease;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
 }
 
 .page-404 {

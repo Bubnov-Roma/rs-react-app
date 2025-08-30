@@ -12,7 +12,7 @@ export const RefetchButton = () => {
   if (!context) {
     throw new Error('PageContext must be used inside PageContext.Provider');
   }
-  const { refetch, isLoaded } = context;
+  const { refetch, isLoading } = context;
   const [isRefreshing, setIsRefreshing] = useState(false);
   const { showSnackbar } = useSnackbar();
   const t = useTranslations('RefetchButton');
@@ -35,7 +35,7 @@ export const RefetchButton = () => {
       onClick={handleInvalidate}
       isLoading={isRefreshing}
       label={t('label')}
-      disabled={isLoaded || isRefreshing}
+      disabled={isLoading || isRefreshing}
       progress={100}
       showProgress={true}
     />

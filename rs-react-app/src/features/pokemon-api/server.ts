@@ -1,5 +1,5 @@
 export async function getPokemonList() {
-  const res = await fetch('https://pokeapi.co/api/v2/pokemon?limit=50', {
+  const res = await fetch('https://pokeapi.co/api/v2/pokemon?limit=100000', {
     cache: 'force-cache',
   });
 

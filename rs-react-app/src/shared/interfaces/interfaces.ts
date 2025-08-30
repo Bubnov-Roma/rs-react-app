@@ -97,6 +97,7 @@ export type PageContextType = {
   setStoredSearchValue: (val: string) => void;
   isDrawerOpen: boolean;
   setIsDrawerOpen: (val: boolean) => void;
+  totalItems: number;
 };
 
 export interface UseLocalStorageType<T> {

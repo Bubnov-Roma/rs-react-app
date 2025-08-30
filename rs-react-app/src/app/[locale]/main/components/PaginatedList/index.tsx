@@ -1,33 +1,19 @@
 'use client';
 
-import { useSearchParams } from 'next/navigation';
-import { ensureSearchParams, isNumber } from '@/utils';
+import { useEffect, useState } from 'react';
+import { usePageContext } from '@/shared';
 import styles from './style.module.css';
-import { CardList } from '@/app/[locale]/components/CardList';
+import { List } from '@/app/[locale]/main/components/List';
 import { SearchInput } from '../Search';
-import { useContext, useEffect, useState } from 'react';
-import { PageContext } from '@/shared';
 import { SelectionPanel } from '@/features';
 import { useTranslations } from 'next-intl';
 
-type Props = {
-  itemsPerPage: number;
-};
-
-export default function PaginatedList({ itemsPerPage }: Props) {
+export default function PaginatedList() {
   const t = useTranslations('PaginatedList');
-
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
 
-  const searchParams = ensureSearchParams(useSearchParams());
-  const currentPage = isNumber(searchParams.get('page'));
-
-  const context = useContext(PageContext);
-  if (!context) {
-    throw new Error('PageContext must be used inside PageContext.Provider');
-  }
-  const { pageContext } = context;
+  const { pageContext } = usePageContext();
 
   const isEmpty = mounted && pageContext?.length === 0;
 
@@ -48,11 +34,7 @@ export default function PaginatedList({ itemsPerPage }: Props) {
           </div>
         ) : (
           <div className={styles.card_list}>
-            <CardList
-              data={pageContext ?? []}
-              currentPage={currentPage}
-              itemsPerPage={itemsPerPage}
-            />
+            <List />
           </div>
         )}
       </div>

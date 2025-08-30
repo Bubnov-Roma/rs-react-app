@@ -8,10 +8,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "preview": "vite preview",
     "format:fix": "prettier --write .",
     "format:check": "prettier ./src --check",
-    "prepare": "cd .. && husky ./rs-react-app/.husky",
+    "prepare": "sh -c \"[ -z \\\"$CI\\\" ] && husky || true\"",
     "test": "jest",
     "test:coverage": "jest --coverage"
   },
@@ -28,6 +27,9 @@
     "redux-persist": "^6.0.0",
     "redux-thunk": "^3.1.0"
   },
+  "engines": {
+    "node": ">=18"
+  },
   "devDependencies": {
     "@commitlint/cli": "^19.8.1",
     "@commitlint/config-conventional": "^19.8.1",
@@ -38,7 +40,6 @@
     "@types/jest": "^30.0.0",
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",
-    "@vitejs/plugin-react": "^4.6.0",
     "eslint": "^9.30.1",
     "eslint-config-prettier": "^10.1.5",
     "eslint-import-resolver-alias": "^1.1.2",
@@ -59,7 +60,6 @@
     "ts-jest": "^29.4.1",
     "ts-node": "^10.9.2",
     "typescript": "~5.8.3",
-    "typescript-eslint": "^8.35.1",
-    "vite": "^7.0.3"
+    "typescript-eslint": "^8.35.1"
   }
 }

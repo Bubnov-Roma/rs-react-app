@@ -1,21 +1,16 @@
 'use client';
 
-import { PageContext } from '@/shared';
-import { useContext, useState, type ChangeEvent } from 'react';
+import { usePageContext } from '@/shared';
+import { useState, type ChangeEvent } from 'react';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { ensureSearchParams } from '@/utils';
 import style from './style.module.css';
 import { useTranslations } from 'next-intl';
-import PageLoader from '@/app/[locale]/components/PageLoader';
+import PageLoader from '@/app/[locale]/main/components/PageLoader';
 
 export const SearchInput = () => {
-  const context = useContext(PageContext);
-  if (!context) {
-    throw new Error('PageContext must be used inside PageContext.Provider');
-  }
-
   const { setNumberPage, storedSearchValue, setStoredSearchValue, isLoading } =
-    context;
+    usePageContext();
 
   const t = useTranslations('Search');
   const [value, setValue] = useState(storedSearchValue);
@@ -39,7 +34,7 @@ export const SearchInput = () => {
     if (value) next.set('search', value);
     else next.delete('search');
 
-    router.push(`${pathname}?${next.toString()}`);
+    router.push(`${pathname}?${next.toString()}`, { scroll: false });
   };
 
   return (

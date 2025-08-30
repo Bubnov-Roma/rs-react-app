@@ -1,93 +1,84 @@
 'use client';
 
-import { useCallback, useMemo, useEffect, useState } from 'react';
-import { PageContextProps, PokemonList, useStorage } from '@/shared';
-import { useGetAllPokemonQuery } from '@/features';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { PageContext } from './page-context';
-import { useSearchParams } from 'next/navigation';
-import { ensureSearchParams } from '@/utils';
-import PageLoader from '@/app/[locale]/components/PageLoader';
+import { ITEMS_PER_PAGE, PokemonList } from '@/shared';
 
-type Props = PageContextProps & {
+type Props = {
+  children?: React.ReactNode;
   initialList?: PokemonList[];
 };
 
 export const PageContextProvider = ({ children, initialList = [] }: Props) => {
-  const { data, refetch, isFetching } = useGetAllPokemonQuery(undefined);
-  const searchParams = ensureSearchParams(useSearchParams());
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
 
-  const {
-    storedValue: storedSearchValue,
-    setStoredValue: setStoredSearchValue,
-  } = useStorage('storageValue', '');
-
-  const { storedValue: numberPage, setStoredValue: setNumberPage } = useStorage(
-    'page',
-    1
-  );
-
+  const [search, setSearch] = useState('');
+  const [page, setPage] = useState(1);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
-    setHydrated(true);
-  }, []);
+    const urlSearch = searchParams.get('search') ?? '';
+    const urlPage = Number(searchParams.get('page') ?? 1);
 
-  useEffect(() => {
-    if (!hydrated) return;
+    setSearch(urlSearch);
+    setPage(urlPage);
+  }, [searchParams]);
 
-    const pageFromUrl = Number(searchParams.get('page')) || 1;
-    if (pageFromUrl !== numberPage) {
-      setNumberPage(pageFromUrl);
-    }
-  }, [hydrated, numberPage, searchParams, setNumberPage]);
+  const filtered = useMemo(() => {
+    if (!search) return initialList;
+    return initialList.filter((item) =>
+      item.name.toLowerCase().includes(search.toLowerCase())
+    );
+  }, [initialList, search]);
 
-  useEffect(() => {
-    if (!hydrated) return;
+  const paginated = useMemo(() => {
+    const start = (page - 1) * ITEMS_PER_PAGE;
+    return filtered.slice(start, start + ITEMS_PER_PAGE);
+  }, [filtered, page]);
 
-    const searchFromUrl = searchParams.get('search') || '';
-    if (searchFromUrl !== storedSearchValue) {
-      setStoredSearchValue(searchFromUrl);
-    }
-  }, [hydrated, searchParams, storedSearchValue, setStoredSearchValue]);
-
-  const Filtered = useCallback(
-    (value: string) => {
-      const source = data?.results ?? initialList;
-      if (!source) return [];
-      return source.filter((item: PokemonList) =>
-        item.name.toLowerCase().includes(value.toLowerCase())
-      );
+  const goToPage = useCallback(
+    (newPage: number) => {
+      const next = new URLSearchParams(searchParams.toString());
+      next.set('page', String(newPage));
+      if (search) next.set('search', search);
+      router.push(`${pathname}?${next.toString()}`, { scroll: false });
     },
-    [data, initialList]
+    [router, pathname, searchParams, search]
   );
 
-  const pageContext = useMemo(() => {
-    const source = data?.results ?? initialList;
-    if (!source) return [];
-    if (storedSearchValue) {
-      return Filtered(storedSearchValue);
-    }
-    return source;
-  }, [data, initialList, storedSearchValue, Filtered]);
-
-  if (!hydrated) {
-    return <PageLoader />;
-  }
+  const setSearchValue = useCallback(
+    (value: string) => {
+      const next = new URLSearchParams(searchParams.toString());
+      if (value) {
+        next.set('search', value);
+      } else {
+        next.delete('search');
+      }
+      router.push(`${pathname}?${next.toString()}`, { scroll: false });
+    },
+    [router, pathname, searchParams]
+  );
 
   return (
     <PageContext.Provider
       value={{
-        isLoading: isFetching,
-        pageContext,
-        Filtered,
-        numberPage,
-        setNumberPage,
-        refetch,
-        storedSearchValue,
-        setStoredSearchValue,
+        isLoading: false,
+        pageContext: paginated,
+        Filtered: (v: string) =>
+          initialList.filter((item) =>
+            item.name.toLowerCase().includes(v.toLowerCase())
+          ),
+        numberPage: page,
+        setNumberPage: goToPage,
+        storedSearchValue: search,
+        setStoredSearchValue: setSearchValue,
         isDrawerOpen,
         setIsDrawerOpen,
+        refetch: async () => {},
+        totalItems: filtered.length,
       }}
     >
       {children}
